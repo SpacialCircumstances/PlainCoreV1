@@ -6,6 +6,6 @@ namespace PlainCore.Graphics
 {
     public interface IDrawable
     {
-
+        void Draw(IRenderTarget target);
     }
 }

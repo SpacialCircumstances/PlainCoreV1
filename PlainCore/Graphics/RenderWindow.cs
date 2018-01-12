@@ -69,6 +69,11 @@ namespace PlainCore.Graphics
             device.SubmitCommands(clearCommandList);
         }
 
+        public void Draw(IDrawable drawable)
+        {
+            throw new NotSupportedException();
+        }
+
         #endregion
     }
 }
