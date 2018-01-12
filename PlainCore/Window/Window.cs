@@ -17,7 +17,6 @@ namespace PlainCore.Window
             CreateWindow();
         }
 
-
         private int width;
         private int height;
         private string title;

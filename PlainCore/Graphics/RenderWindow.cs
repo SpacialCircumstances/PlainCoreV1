@@ -7,7 +7,7 @@ using Veldrid.StartupUtilities;
 
 namespace PlainCore.Graphics
 {
-    public class RenderWindow: Window.Window
+    public class RenderWindow: Window.Window, IRenderTarget
     {
         public RenderWindow(int width = 800, int height = 600, string title = "PlainCore", GraphicsDeviceOptions options = new GraphicsDeviceOptions()): base(width, height, title)
         {
@@ -36,7 +36,7 @@ namespace PlainCore.Graphics
         {
             base.CreateWindow();
             device = VeldridStartup.CreateGraphicsDevice(window, graphicsDeviceOptions, GraphicsBackend.OpenGL);
-            
+
             //Only support OpenGL
             if (device.BackendType != GraphicsBackend.OpenGL)
             {
