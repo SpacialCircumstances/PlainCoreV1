@@ -21,7 +21,6 @@ namespace PlainCoreTestapp
 
             Matrix4x4 m = Matrix4x4.Identity;
             window.Device.UpdateBuffer(db, 0, m);
-            batch.Init();
 
             while(window.IsOpen)
             {
@@ -29,7 +28,7 @@ namespace PlainCoreTestapp
                 window.Clear(RgbaFloat.CornflowerBlue);
 
                 batch.Begin(window);
-                batch.Render(texture1, 0.1f, 0.1f, 0.5f, 0.5f);
+                batch.Draw(texture1, 0.1f, 0.1f, 0.5f, 0.5f);
                 batch.End();
 
                 window.Display();

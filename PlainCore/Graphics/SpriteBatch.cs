@@ -16,6 +16,8 @@ namespace PlainCore.Graphics
         public SpriteBatch(GraphicsDevice device)
         {
             this.device = device;
+            CreateResources();
+            vertices = new List<VertexPositionTexture>();
         }
 
         private DeviceBuffer vertexBuffer;
@@ -31,25 +33,23 @@ namespace PlainCore.Graphics
         private ResourceSet worldResourceSet;
 
         private GraphicsDevice device;
-        private bool drawing = false;
+        private bool drawing;
         private uint index;
 
         private List<VertexPositionTexture> vertices;
 
         private ushort[] indices;
 
-        public void Init()
-        {
-            CreateResources();
-            vertices = new List<VertexPositionTexture>();
-        }
-
         public void Begin(IRenderTarget target)
         {
+            if (drawing)
+            {
+                throw new InvalidOperationException("Multiple calls to Begin");
+            }
+
             drawing = true;
             index = 0;
             device.UpdateBuffer(worldMatrixBuffer, 0, target.GetView().GetTransformationMatrix());
-            vertices.Clear();
         }
 
         public void End()
@@ -59,22 +59,27 @@ namespace PlainCore.Graphics
             texture = null;
         }
 
-        public void Render(Texture texture, float x, float y, float width, float height)
+        public void Draw(Texture texture, float x, float y, float width, float height, float texX1 = 0f, float texY1 = 0f, float texX2 = 0f, float texY2 = 0f)
         {
             CheckForFlush(texture);
             float w = width;
             float h = height;
 
-            vertices.Add(new VertexPositionTexture(new Vector2(x, y + h), new Vector2(0, 0)));
-            vertices.Add(new VertexPositionTexture(new Vector2(x + w, y + h), new Vector2(1, 0)));
-            vertices.Add(new VertexPositionTexture(new Vector2(x, y), new Vector2(0, 1)));
-            vertices.Add(new VertexPositionTexture(new Vector2(x + w, y), new Vector2(1, 1)));
+            vertices.Add(new VertexPositionTexture(new Vector2(x, y + h), new Vector2(texX1, texY1)));
+            vertices.Add(new VertexPositionTexture(new Vector2(x + w, y + h), new Vector2(texX2, texY1)));
+            vertices.Add(new VertexPositionTexture(new Vector2(x, y), new Vector2(texX1, texY2)));
+            vertices.Add(new VertexPositionTexture(new Vector2(x + w, y), new Vector2(texX2, texY2)));
 
             index++;
         }
 
         protected void Flush()
         {
+            if (!drawing)
+            {
+                throw new InvalidOperationException("Batch is not in drawing state");
+            }
+
             indices = new ushort[index * 6];
             for (int i = 0; i < index; i++)
             {
