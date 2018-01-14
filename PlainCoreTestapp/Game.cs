@@ -22,14 +22,13 @@ namespace PlainCoreTestapp
             Matrix4x4 m = Matrix4x4.Identity;
             window.Device.UpdateBuffer(db, 0, m);
             batch.Init();
-            batch.SetWorldMatrix(db);
 
             while(window.IsOpen)
             {
                 window.DispatchEvents();
                 window.Clear(RgbaFloat.CornflowerBlue);
 
-                batch.Begin();
+                batch.Begin(window);
                 batch.Render(texture1, 0.1f, 0.1f, 0.5f, 0.5f);
                 batch.End();
 

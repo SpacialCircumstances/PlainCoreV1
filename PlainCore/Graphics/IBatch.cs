@@ -6,7 +6,7 @@ namespace PlainCore.Graphics
 {
     public interface IBatch
     {
-        void Begin();
+        void Begin(IRenderTarget target);
         void End();
     }
 }

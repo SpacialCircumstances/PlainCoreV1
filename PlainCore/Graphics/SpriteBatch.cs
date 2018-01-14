@@ -20,6 +20,7 @@ namespace PlainCore.Graphics
 
         private DeviceBuffer vertexBuffer;
         private DeviceBuffer indexBuffer;
+        private DeviceBuffer worldMatrixBuffer;
         private Veldrid.Shader vertexShader;
         private Veldrid.Shader fragmentShader;
         private ResourceLayout resourceLayout;
@@ -43,10 +44,11 @@ namespace PlainCore.Graphics
             vertices = new List<VertexPositionTexture>();
         }
 
-        public void Begin()
+        public void Begin(IRenderTarget target)
         {
             drawing = true;
             index = 0;
+            device.UpdateBuffer(worldMatrixBuffer, 0, target.GetView().GetTransformationMatrix());
             vertices.Clear();
         }
 
@@ -116,6 +118,7 @@ namespace PlainCore.Graphics
 
             vertexBuffer = factory.CreateBuffer(new BufferDescription(MAX_BATCH * VertexPositionTexture.Size, BufferUsage.VertexBuffer));
             indexBuffer = factory.CreateBuffer(new BufferDescription(MAX_BATCH * sizeof(ushort), BufferUsage.IndexBuffer));
+            worldMatrixBuffer = factory.CreateBuffer(new BufferDescription(64, BufferUsage.UniformBuffer));
 
             var vertexLayoutDescription = new VertexLayoutDescription(
                 new VertexElementDescription("Position", VertexElementSemantic.Position, VertexElementFormat.Float2),
@@ -127,6 +130,8 @@ namespace PlainCore.Graphics
             resourceLayout = factory.CreateResourceLayout(new ResourceLayoutDescription(new ResourceLayoutElementDescription("SpriteTexture", ResourceKind.TextureReadOnly, ShaderStages.Fragment), new ResourceLayoutElementDescription("SpriteSampler", ResourceKind.Sampler, ShaderStages.Fragment)));
 
             worldResourceLayout = factory.CreateResourceLayout(new ResourceLayoutDescription(new ResourceLayoutElementDescription("World", ResourceKind.UniformBuffer, ShaderStages.Vertex)));
+
+            worldResourceSet = device.ResourceFactory.CreateResourceSet(new ResourceSetDescription(worldResourceLayout, worldMatrixBuffer));
 
             var description = new GraphicsPipelineDescription();
             description.BlendState = BlendStateDescription.SingleOverrideBlend;
@@ -162,11 +167,6 @@ namespace PlainCore.Graphics
                 Flush();
             }
             texture = tex;
-        }
-
-        public void SetWorldMatrix(DeviceBuffer buffer)
-        {
-            worldResourceSet = device.ResourceFactory.CreateResourceSet(new ResourceSetDescription(worldResourceLayout, buffer));
         }
     }
 }

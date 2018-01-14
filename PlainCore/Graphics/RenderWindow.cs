@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using System.Collections.Generic;
 using System.Text;
 using PlainCore.Window;
@@ -17,6 +18,7 @@ namespace PlainCore.Graphics
         private GraphicsDevice device;
         private GraphicsDeviceOptions graphicsDeviceOptions;
         private CommandList clearCommandList;
+        private View view = new View(new Vector2(0f));
 
         #region Properties
 
@@ -69,9 +71,14 @@ namespace PlainCore.Graphics
             device.SubmitCommands(clearCommandList);
         }
 
-        public Framebuffer getFramebuffer()
+        public Framebuffer GetFramebuffer()
         {
             return device.SwapchainFramebuffer;
+        }
+
+        public View GetView()
+        {
+            return view;
         }
 
         #endregion
