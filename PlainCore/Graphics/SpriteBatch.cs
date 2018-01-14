@@ -168,10 +168,5 @@ namespace PlainCore.Graphics
         {
             worldResourceSet = device.ResourceFactory.CreateResourceSet(new ResourceSetDescription(worldResourceLayout, buffer));
         }
-
-        public void Draw(IRenderTarget target)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
