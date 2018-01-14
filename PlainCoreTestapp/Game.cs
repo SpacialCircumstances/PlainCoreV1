@@ -18,6 +18,8 @@ namespace PlainCoreTestapp
                 window.Clear(RgbaFloat.CornflowerBlue);
                 window.Display();
             }
+
+            Environment.Exit(0);
         }
     }
 }

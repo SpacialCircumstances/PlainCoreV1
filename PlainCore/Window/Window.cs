@@ -60,7 +60,9 @@ namespace PlainCore.Window
             {
                 WindowHeight = Height,
                 WindowWidth = Width,
-                WindowTitle = Title
+                WindowTitle = Title,
+                X = 100,
+                Y = 100
             };
 
             window = VeldridStartup.CreateWindow(ref wci);
