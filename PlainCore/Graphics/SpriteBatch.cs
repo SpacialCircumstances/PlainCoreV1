@@ -59,7 +59,7 @@ namespace PlainCore.Graphics
             texture = null;
         }
 
-        public void Draw(Texture texture, float x, float y, float width, float height, float texX1 = 0f, float texY1 = 0f, float texX2 = 0f, float texY2 = 0f)
+        public void Draw(Texture texture, float x, float y, float width, float height, float texX1 = 0f, float texY1 = 0f, float texX2 = 1f, float texY2 = 1f)
         {
             CheckForFlush(texture);
             float w = width;
