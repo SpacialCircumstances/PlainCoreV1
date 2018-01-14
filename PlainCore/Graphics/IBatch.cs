@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PlainCore.Graphics
 {
-    public interface IBatch: IDrawable
+    public interface IBatch
     {
         void Begin();
         void End();

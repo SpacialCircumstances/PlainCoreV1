@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Veldrid;
 
 namespace PlainCore.Graphics
 {
@@ -9,6 +10,6 @@ namespace PlainCore.Graphics
         int Height { get; }
         int Width { get; }
 
-        void Draw(IDrawable drawable);
+        Framebuffer getFramebuffer();
     }
 }

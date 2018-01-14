@@ -69,9 +69,9 @@ namespace PlainCore.Graphics
             device.SubmitCommands(clearCommandList);
         }
 
-        public void Draw(IDrawable drawable)
+        public Framebuffer getFramebuffer()
         {
-            throw new NotSupportedException();
+            return device.SwapchainFramebuffer;
         }
 
         #endregion
