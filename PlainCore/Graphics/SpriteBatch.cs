@@ -59,16 +59,21 @@ namespace PlainCore.Graphics
             texture = null;
         }
 
-        public void Draw(Texture texture, float x, float y, float width, float height, float texX1 = 0f, float texY1 = 0f, float texX2 = 1f, float texY2 = 1f)
+        public void Draw(IBatchable batchable, float x, float y, float width, float height, float texX1 = 0f, float texY1 = 0f, float texX2 = 1f, float texY2 = 1f)
         {
-            CheckForFlush(texture);
+            CheckForFlush(batchable.GetTexture());
             float w = width;
             float h = height;
 
-            vertices.Add(new VertexPositionTexture(new Vector2(x, y + h), new Vector2(texX1, texY1)));
-            vertices.Add(new VertexPositionTexture(new Vector2(x + w, y + h), new Vector2(texX2, texY1)));
-            vertices.Add(new VertexPositionTexture(new Vector2(x, y), new Vector2(texX1, texY2)));
-            vertices.Add(new VertexPositionTexture(new Vector2(x + w, y), new Vector2(texX2, texY2)));
+            float lowerX = texX1 * batchable.GetLowerCoordinates().X;
+            float upperX = texX2 * batchable.GetUpperCoordinates().X;
+            float lowerY = texY1 * batchable.GetLowerCoordinates().Y;
+            float upperY = texY2 * batchable.GetUpperCoordinates().Y;
+
+            vertices.Add(new VertexPositionTexture(new Vector2(x, y + h), new Vector2(lowerX, lowerY)));
+            vertices.Add(new VertexPositionTexture(new Vector2(x + w, y + h), new Vector2(upperX, lowerY)));
+            vertices.Add(new VertexPositionTexture(new Vector2(x, y), new Vector2(lowerX, upperY)));
+            vertices.Add(new VertexPositionTexture(new Vector2(x + w, y), new Vector2(upperX, upperY)));
 
             index++;
         }

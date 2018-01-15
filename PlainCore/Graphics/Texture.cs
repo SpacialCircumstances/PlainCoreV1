@@ -1,18 +1,22 @@
 ﻿using SixLabors.ImageSharp;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 using Veldrid;
 using Veldrid.ImageSharp;
 
 namespace PlainCore.Graphics
 {
-    public class Texture
+    public class Texture: IBatchable
     {
         protected Texture()
         {
 
         }
+
+        private Vector2 lowerCoords = new Vector2(0f);
+        private Vector2 upperCoords = new Vector2(1f);
 
         #region Static factory methods
 
@@ -36,6 +40,21 @@ namespace PlainCore.Graphics
             tex.DeviceTextureView = factory.CreateTextureView(new TextureViewDescription(tex.DeviceTexture));
 
             return tex;
+        }
+
+        public Texture GetTexture()
+        {
+            return this;
+        }
+
+        public Vector2 GetLowerCoordinates()
+        {
+            return lowerCoords;
+        }
+
+        public Vector2 GetUpperCoordinates()
+        {
+            return upperCoords;
         }
 
         #endregion
