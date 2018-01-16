@@ -35,6 +35,7 @@ namespace PlainCore.Graphics
         private GraphicsDevice device;
         private bool drawing;
         private uint index;
+        private IRenderTarget target;
 
         private List<VertexPositionTexture> vertices;
 
@@ -46,6 +47,8 @@ namespace PlainCore.Graphics
             {
                 throw new InvalidOperationException("Multiple calls to Begin");
             }
+
+            this.target = target;
 
             drawing = true;
             index = 0;
@@ -106,7 +109,7 @@ namespace PlainCore.Graphics
             resourceSet = device.ResourceFactory.CreateResourceSet(new ResourceSetDescription(resourceLayout, texture.DeviceTextureView, device.Aniso4xSampler));
 
             commandList.Begin();
-            commandList.SetFramebuffer(device.SwapchainFramebuffer);
+            commandList.SetFramebuffer(target.GetFramebuffer());
             commandList.SetFullViewports();
             commandList.SetVertexBuffer(0, vertexBuffer);
             commandList.SetIndexBuffer(indexBuffer, IndexFormat.UInt16);
