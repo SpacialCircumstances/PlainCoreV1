@@ -11,7 +11,7 @@ namespace PlainCore.Graphics
     public class SpriteBatch : IBatch
     {
 
-        private const int MAX_BATCH = 1000;
+        private const int MAX_BATCH = 1024;
 
         public SpriteBatch(GraphicsDevice device)
         {
@@ -172,7 +172,7 @@ namespace PlainCore.Graphics
                 return;
             }
 
-            if (tex != texture)
+            if (tex != texture || index == MAX_BATCH)
             {
                 Flush();
             }
