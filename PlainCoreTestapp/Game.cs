@@ -20,14 +20,15 @@ namespace PlainCoreTestapp
 
             var clock = new Clock();
 
+            float rot = 0f;
+
             while(window.IsOpen)
             {
                 window.DispatchEvents();
                 window.Clear(RgbaFloat.CornflowerBlue);
-                window.GetView().Rotation += 1f * (float)clock.Restart().TotalSeconds;
+                rot += (float)clock.Restart().TotalSeconds * 2f;
                 batch.Begin(window);
-                batch.Draw(texture1, 0.1f, 0.1f, 0.5f, 0.5f);
-                batch.Draw(texture2, -0.6f, -0.4f, 0.4f, 0.4f);
+                batch.Draw(texture1, 0.1f, 0.1f, 0.5f, 0.5f, 0.5f, 0.5f, rot);
                 batch.End();
 
                 window.Display();

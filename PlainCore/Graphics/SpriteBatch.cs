@@ -41,6 +41,8 @@ namespace PlainCore.Graphics
 
         private ushort[] indices;
 
+        private Vector2 nullVector = new Vector2(0, 0);
+
         public void Begin(IRenderTarget target)
         {
             if (drawing)
@@ -73,12 +75,57 @@ namespace PlainCore.Graphics
             float lowerY = texY1 * batchable.GetLowerCoordinates().Y;
             float upperY = texY2 * batchable.GetUpperCoordinates().Y;
 
-            vertices.Add(new VertexPositionTexture(new Vector2(x, y + h), new Vector2(lowerX, lowerY)));
-            vertices.Add(new VertexPositionTexture(new Vector2(x + w, y + h), new Vector2(upperX, lowerY)));
-            vertices.Add(new VertexPositionTexture(new Vector2(x, y), new Vector2(lowerX, upperY)));
-            vertices.Add(new VertexPositionTexture(new Vector2(x + w, y), new Vector2(upperX, upperY)));
+            PushVertex(x, y + h, lowerX, lowerY);
+            PushVertex(x + w, y + h, upperX, lowerY);
+            PushVertex(x, y, lowerX, upperY);
+            PushVertex(x + w, y, upperX, upperY);
+            index++;
+        }
+
+        public void Draw(IBatchable batchable, float x, float y, float width, float height, float originX, float originY, float rotation, float texX1, float texY1, float texX2, float texY2)
+        {
+            CheckForFlush(batchable.GetTexture());
+
+            float lowerX = texX1 * batchable.GetLowerCoordinates().X;
+            float upperX = texX2 * batchable.GetUpperCoordinates().X;
+            float lowerY = texY1 * batchable.GetLowerCoordinates().Y;
+            float upperY = texY2 * batchable.GetUpperCoordinates().Y;
+
+            var origin = new Vector2(originX, originY);
+            var rotationMatrix = Matrix3x2.CreateRotation(rotation, origin);
+
+            var ld = rotationMatrix.MultiplyVector(nullVector);
+            var lu = rotationMatrix.MultiplyVector(new Vector2(0, height));
+            var ru = rotationMatrix.MultiplyVector(new Vector2(width, 0));
+            var rd = rotationMatrix.MultiplyVector(new Vector2(width, height));
+
+            var position = new Vector2(x, y);
+            ld += position;
+            lu += position;
+            ru += position;
+            rd += position;
+
+            PushVertex(lu, lowerX, lowerY);
+            PushVertex(rd, upperX, lowerY);
+            PushVertex(ld, lowerX, upperY);
+            PushVertex(ru, upperX, upperY);
 
             index++;
+        }
+
+        public void Draw(IBatchable batchable, float x, float y, float width, float height, float originX, float originY, float rotation)
+        {
+            Draw(batchable, x, y, width, height, originX, originY, rotation, 0f, 0f, 1f, 1f);
+        }
+
+        private void PushVertex(float x, float y, float tx, float ty)
+        {
+            vertices.Add(new VertexPositionTexture(new Vector2(x, y), new Vector2(tx, ty)));
+        }
+
+        private void PushVertex(Vector2 pos, float tx, float ty)
+        {
+            vertices.Add(new VertexPositionTexture(pos, new Vector2(tx, ty)));
         }
 
         protected void Flush()
