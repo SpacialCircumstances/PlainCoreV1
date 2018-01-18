@@ -120,6 +120,11 @@ namespace PlainCore.Graphics
             Draw(batchable, x, y, width, height, originX, originY, rotation, 0f, 0f, 1f, 1f);
         }
 
+        public void Draw(Sprite sprite)
+        {
+            Draw(sprite.Texture, sprite.Position.X, sprite.Position.Y, sprite.Scale.X, sprite.Scale.Y, sprite.Origin.X, sprite.Origin.Y, sprite.Rotation);
+        }
+
         private void PushVertex(float x, float y, float tx, float ty)
         {
             vertices.Add(new VertexPositionTexture(new Vector2(x, y), new Vector2(tx, ty)));
