@@ -91,13 +91,15 @@ namespace PlainCore.Graphics
             float lowerY = texY1 * batchable.GetLowerCoordinates().Y;
             float upperY = texY2 * batchable.GetUpperCoordinates().Y;
 
-            var origin = new Vector2(originX, originY);
-            var rotationMatrix = Matrix3x2.CreateRotation(rotation, origin);
+            float ox = originX * width;
+            float oy = originY * height;
 
-            var ld = rotationMatrix.MultiplyVector(nullVector);
-            var lu = rotationMatrix.MultiplyVector(new Vector2(0, height));
-            var ru = rotationMatrix.MultiplyVector(new Vector2(width, 0));
-            var rd = rotationMatrix.MultiplyVector(new Vector2(width, height));
+            var rotationMatrix = Matrix3x2.CreateRotation(rotation);
+
+            var ld = rotationMatrix.MultiplyVector(new Vector2(-ox, -oy));
+            var lu = rotationMatrix.MultiplyVector(new Vector2(-ox, height - oy));
+            var ru = rotationMatrix.MultiplyVector(new Vector2(width - ox, -oy));
+            var rd = rotationMatrix.MultiplyVector(new Vector2(width - ox, height - oy));
 
             var position = new Vector2(x, y);
             ld += position;
