@@ -13,7 +13,7 @@ namespace PlainCore.Graphics
         {
             this.device = device;
             factory = device.ResourceFactory;
-            GeometryType = geometryType;
+            this.geometryType = geometryType;
             this.capacity = (uint)capacity;
             Shaders = new List<Shader>
             {
@@ -38,11 +38,19 @@ namespace PlainCore.Graphics
 
         private List<VertexPositionColorTexture> vertices = new List<VertexPositionColorTexture>();
         private List<Shader> Shaders;
+        private GeometryType geometryType;
 
         #region Public properties
 
-        public GeometryType GeometryType;
         public int Count { get => vertices.Count; }
+        public GeometryType GeometryType {
+            get => geometryType;
+            set
+            {
+                geometryType = value;
+                CreateResources();
+            }
+        }
 
         public VertexPositionColorTexture this[int index]
         {
@@ -112,7 +120,7 @@ namespace PlainCore.Graphics
                 BlendState = BlendStateDescription.SingleOverrideBlend,
                 DepthStencilState = new DepthStencilStateDescription(true, true, ComparisonKind.LessEqual),
                 RasterizerState = new RasterizerStateDescription(FaceCullMode.None, PolygonFillMode.Solid, FrontFace.Clockwise, true, false),
-                PrimitiveTopology = PrimitiveTopology.TriangleList,
+                PrimitiveTopology = GetPrimitiveTopology(),
                 ResourceLayouts = new[] { worldResourceLayout, textureResourceLayout },
                 ShaderSet = new ShaderSetDescription(new VertexLayoutDescription[] { vertexLayoutDescription }, LoadShaders()),
                 Outputs = device.SwapchainFramebuffer.OutputDescription
@@ -133,6 +141,25 @@ namespace PlainCore.Graphics
             }
 
             return shaders;
+        }
+
+        private PrimitiveTopology GetPrimitiveTopology()
+        {
+            switch(geometryType)
+            {
+                case GeometryType.Lines:
+                    return PrimitiveTopology.LineList;
+                case GeometryType.LineStrip:
+                    return PrimitiveTopology.LineStrip;
+                case GeometryType.Points:
+                    return PrimitiveTopology.PointList;
+                case GeometryType.Triangles:
+                    return PrimitiveTopology.TriangleList;
+                case GeometryType.TriangleStrip:
+                    return PrimitiveTopology.TriangleStrip;
+            }
+
+            return PrimitiveTopology.PointList;
         }
     }
 }
