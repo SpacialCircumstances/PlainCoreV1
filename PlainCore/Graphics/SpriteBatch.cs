@@ -31,6 +31,7 @@ namespace PlainCore.Graphics
         private Texture texture;
         private ResourceLayout worldResourceLayout;
         private ResourceSet worldResourceSet;
+        private CommandList commandList;
 
         private GraphicsDevice device;
         private bool drawing;
@@ -155,7 +156,7 @@ namespace PlainCore.Graphics
                 indices[idx + 5] = (ushort)(inst + 2);
             }
 
-            var commandList = device.ResourceFactory.CreateCommandList();
+            
 
             device.UpdateBuffer(vertexBuffer, 0, vertices.ToArray());
             device.UpdateBuffer(indexBuffer, 0, indices);
@@ -210,6 +211,8 @@ namespace PlainCore.Graphics
             description.Outputs = device.SwapchainFramebuffer.OutputDescription;
 
             pipeline = factory.CreateGraphicsPipeline(description);
+
+            commandList = factory.CreateCommandList();
         }
 
         private void LoadShaders()
