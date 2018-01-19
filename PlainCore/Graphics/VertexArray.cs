@@ -1,18 +1,26 @@
-﻿using System;
+﻿using PlainCore.Graphics.BuiltIn;
+using PlainCore.Graphics.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Veldrid;
 
 namespace PlainCore.Graphics
 {
-    public class VertexArray<T> where T: struct
+    public class VertexArray
     {
-        public VertexArray(GraphicsDevice device, GeometryType geometryType = GeometryType.Points, int initalCapacity = 24)
+        public VertexArray(GraphicsDevice device, int capacity, GeometryType geometryType = GeometryType.Points)
         {
             this.device = device;
             factory = device.ResourceFactory;
             GeometryType = geometryType;
-            CreateResources(initalCapacity);
+            this.capacity = (uint)capacity;
+            Shaders = new List<Shader>
+            {
+                new PositionColorTextureVertexShader(),
+                new PositionColorTextureFragmentShader()
+            };
+            CreateResources();
         }
 
         private GraphicsDevice device;
@@ -22,15 +30,21 @@ namespace PlainCore.Graphics
         private CommandList commands;
         private DeviceBuffer vertexBuffer;
         private DeviceBuffer worldMatrixBuffer;
+        private ResourceSet worldResourceSet;
+        private ResourceLayout worldResourceLayout;
+        private ResourceLayout textureResourceLayout;
 
-        private List<T> vertices;
+        private uint capacity;
+
+        private List<VertexPositionColorTexture> vertices = new List<VertexPositionColorTexture>();
+        private List<Shader> Shaders;
 
         #region Public properties
 
         public GeometryType GeometryType;
         public int Count { get => vertices.Count; }
 
-        public T this[int index]
+        public VertexPositionColorTexture this[int index]
         {
             get => vertices[index];
             set => vertices[index] = value;
@@ -40,7 +54,7 @@ namespace PlainCore.Graphics
 
         #region Public methods
 
-        public void Add(T vertex)
+        public void Add(VertexPositionColorTexture vertex)
         {
             vertices.Add(vertex);
         }
@@ -50,16 +64,75 @@ namespace PlainCore.Graphics
             vertices.Clear();
         }
 
-        public void Draw(IRenderTarget target)
+        public void Draw(IRenderTarget target, Texture texture)
         {
+            device.UpdateBuffer(vertexBuffer, 0, vertices.ToArray());
+            device.UpdateBuffer(worldMatrixBuffer, 0, target.GetView().GetTransformationMatrix());
 
+            worldResourceSet = factory.CreateResourceSet(new ResourceSetDescription(worldResourceLayout, worldMatrixBuffer));
+
+            commands.Begin();
+            commands.SetFramebuffer(target.GetFramebuffer());
+            commands.SetFullViewports();
+            commands.SetPipeline(pipeline);
+            commands.SetVertexBuffer(0, vertexBuffer);
+            commands.SetGraphicsResourceSet(0, worldResourceSet);
+            commands.SetGraphicsResourceSet(1, factory.CreateResourceSet(new ResourceSetDescription(textureResourceLayout, texture.DeviceTextureView, device.Aniso4xSampler)));
+            commands.Draw((uint)vertices.Count);
+            commands.End();
+
+            device.SubmitCommands(commands);
+        }
+
+        public void SetShaders(List<Shader> shaders)
+        {
+            Shaders = shaders;
+            CreateResources();
         }
 
         #endregion
 
-        private void CreateResources(int capacity)
+        protected void CreateResources()
         {
-            
+            uint size = capacity;
+            vertexBuffer = factory.CreateBuffer(new BufferDescription(size * VertexPositionColorTexture.Size, BufferUsage.VertexBuffer));
+            worldMatrixBuffer = factory.CreateBuffer(new BufferDescription(64, BufferUsage.UniformBuffer));
+
+            worldResourceLayout = factory.CreateResourceLayout(new ResourceLayoutDescription(new ResourceLayoutElementDescription("World", ResourceKind.UniformBuffer, ShaderStages.Vertex)));
+            textureResourceLayout = factory.CreateResourceLayout(new ResourceLayoutDescription(new ResourceLayoutElementDescription("SpriteTexture", ResourceKind.TextureReadOnly, ShaderStages.Fragment), new ResourceLayoutElementDescription("SpriteSampler", ResourceKind.Sampler, ShaderStages.Fragment)));
+
+            var vertexLayoutDescription = new VertexLayoutDescription(
+                new VertexElementDescription("Position", VertexElementSemantic.Position, VertexElementFormat.Float2),
+                new VertexElementDescription("Color", VertexElementSemantic.Color, VertexElementFormat.Float4),
+                new VertexElementDescription("TextureCoords", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float2)
+                );
+
+            var description = new GraphicsPipelineDescription
+            {
+                BlendState = BlendStateDescription.SingleOverrideBlend,
+                DepthStencilState = new DepthStencilStateDescription(true, true, ComparisonKind.LessEqual),
+                RasterizerState = new RasterizerStateDescription(FaceCullMode.None, PolygonFillMode.Solid, FrontFace.Clockwise, true, false),
+                PrimitiveTopology = PrimitiveTopology.TriangleList,
+                ResourceLayouts = new[] { worldResourceLayout, textureResourceLayout },
+                ShaderSet = new ShaderSetDescription(new VertexLayoutDescription[] { vertexLayoutDescription }, LoadShaders()),
+                Outputs = device.SwapchainFramebuffer.OutputDescription
+            };
+
+            pipeline = factory.CreateGraphicsPipeline(description);
+
+            commands = factory.CreateCommandList();
+        }
+        
+        protected Veldrid.Shader[] LoadShaders()
+        {
+            var shaders = new Veldrid.Shader[Shaders.Count];
+
+            for (int i = 0; i < Shaders.Count; i++)
+            {
+                shaders[i] = Shaders[i].CreateDeviceShader(device);
+            }
+
+            return shaders;
         }
     }
 }
