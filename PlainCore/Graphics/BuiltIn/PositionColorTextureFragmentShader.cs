@@ -10,7 +10,7 @@ namespace PlainCore.Graphics.BuiltIn
     {
         public PositionColorTextureFragmentShader()
         {
-            Stage = ShaderStages.Vertex;
+            Stage = ShaderStages.Fragment;
             EntryPoint = "FS";
             GlslShader = new ShaderMemoryResource(Encoding.ASCII.GetBytes(glslShader));
         }
