@@ -1,5 +1,6 @@
 ﻿using PlainCore.Graphics.BuiltIn;
 using PlainCore.Graphics.Primitives;
+using SixLabors.ImageSharp;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,6 +16,7 @@ namespace PlainCore.Graphics
             factory = device.ResourceFactory;
             this.geometryType = geometryType;
             this.capacity = (uint)capacity;
+            EmptyTexture = Texture.FromImage(device, Image.LoadPixelData<Rgba32>(new byte[]{ (byte)255, (byte)255, (byte)255, (byte)255 }, 1, 1));
             Shaders = new List<Shader>
             {
                 new PositionColorTextureVertexShader(),
@@ -51,6 +53,8 @@ namespace PlainCore.Graphics
                 CreateResources();
             }
         }
+
+        public Texture EmptyTexture;
 
         public VertexPositionColorTexture this[int index]
         {
