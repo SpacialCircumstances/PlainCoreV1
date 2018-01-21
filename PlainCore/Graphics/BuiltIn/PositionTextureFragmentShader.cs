@@ -6,9 +6,9 @@ using Veldrid;
 
 namespace PlainCore.Graphics.BuiltIn
 {
-    public class SpriteBatchFragmentShader : Shader
+    public class PositionTextureFragmentShader : Shader
     {
-        public SpriteBatchFragmentShader()
+        public PositionTextureFragmentShader()
         {
             Stage = ShaderStages.Fragment;
             EntryPoint = "FS";

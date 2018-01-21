@@ -6,9 +6,9 @@ using Veldrid;
 
 namespace PlainCore.Graphics.BuiltIn
 {
-    public class SpriteBatchVertexShader : Shader
+    public class PositionTextureVertexShader : Shader
     {
-        public SpriteBatchVertexShader()
+        public PositionTextureVertexShader()
         {
             Stage = ShaderStages.Vertex;
             EntryPoint = "VS";

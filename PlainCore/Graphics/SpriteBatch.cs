@@ -217,10 +217,10 @@ namespace PlainCore.Graphics
 
         private void LoadShaders()
         {
-            var vShader = new SpriteBatchVertexShader();
+            var vShader = new PositionTextureVertexShader();
             vertexShader = vShader.CreateDeviceShader(device);
 
-            var fShader = new SpriteBatchFragmentShader();
+            var fShader = new PositionTextureFragmentShader();
             fragmentShader = fShader.CreateDeviceShader(device);
         }
 
