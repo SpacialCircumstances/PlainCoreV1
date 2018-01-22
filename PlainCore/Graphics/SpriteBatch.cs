@@ -224,10 +224,10 @@ namespace PlainCore.Graphics
 
         private void LoadShaders()
         {
-            var vShader = new PositionColorTextureVertexShader();
+            var vShader = BuiltinShaderRepository.GetBuiltinShader(typeof(VertexPositionColorTexture), ShaderStages.Vertex);
             vertexShader = vShader.CreateDeviceShader(device);
 
-            var fShader = new PositionColorTextureFragmentShader();
+            var fShader = BuiltinShaderRepository.GetBuiltinShader(typeof(VertexPositionColorTexture), ShaderStages.Fragment);
             fragmentShader = fShader.CreateDeviceShader(device);
         }
 

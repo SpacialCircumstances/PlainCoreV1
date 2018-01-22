@@ -19,8 +19,8 @@ namespace PlainCore.Graphics
             EmptyTexture = Texture.FromImage(device, Image.LoadPixelData<Rgba32>(new byte[]{ (byte)255, (byte)255, (byte)255, (byte)255 }, 1, 1));
             Shaders = new List<Shader>
             {
-                new PositionColorTextureVertexShader(),
-                new PositionColorTextureFragmentShader()
+                BuiltinShaderRepository.GetBuiltinShader(typeof(VertexPositionColorTexture), ShaderStages.Vertex),
+                BuiltinShaderRepository.GetBuiltinShader(typeof(VertexPositionColorTexture), ShaderStages.Fragment)
             };
             CreateResources();
         }
