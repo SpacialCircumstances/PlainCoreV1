@@ -28,7 +28,7 @@ namespace PlainCoreTestapp
                 window.GetView().Rotation += (float)clock.Restart().TotalSeconds * 0.2f;
 
                 batch.Begin(window);
-                batch.Draw(texture1, 0.1f, 0.1f, 0.5f, 0.5f);
+                batch.Draw(texture1, RgbaFloat.Red, 0.1f, 0.1f, 0.5f, 0.5f);
                 batch.Draw(texture2, -0.5f, -0.4f, 0.4f, 0.4f);
                 batch.End();
 

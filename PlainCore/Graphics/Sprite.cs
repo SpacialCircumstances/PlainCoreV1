@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
+using Veldrid;
 
 namespace PlainCore.Graphics
 {
@@ -31,11 +32,13 @@ namespace PlainCore.Graphics
         protected float rotation;
         protected Vector2 scale = new Vector2();
         protected Vector2 origin = new Vector2();
+        protected RgbaFloat color = RgbaFloat.White;
 
         public Vector2 Position { get => position; set => position = value; }
         public float Rotation { get => rotation; set => rotation = value; }
         public Vector2 Scale { get => scale; set => scale = value; }
         public Vector2 Origin { get => origin; set => origin = value; }
+        public RgbaFloat Color { get => color; set => color = value; }
 
         public Matrix4x4 GetTransformationMatrix()
         {

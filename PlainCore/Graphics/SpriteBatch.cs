@@ -30,6 +30,7 @@ namespace PlainCore.Graphics
         private ResourceSet resourceSet;
         private Texture texture;
         private ResourceLayout worldResourceLayout;
+
         private ResourceSet worldResourceSet;
         private CommandList commandList;
 
@@ -65,7 +66,7 @@ namespace PlainCore.Graphics
             texture = null;
         }
 
-        public void Draw(IBatchable batchable, float x, float y, float width, float height, float texX1 = 0f, float texY1 = 0f, float texX2 = 1f, float texY2 = 1f)
+        public void Draw(IBatchable batchable, RgbaFloat color, float x, float y, float width, float height, float texX1 = 0f, float texY1 = 0f, float texX2 = 1f, float texY2 = 1f)
         {
             CheckForFlush(batchable.GetTexture());
             float w = width;
@@ -76,14 +77,14 @@ namespace PlainCore.Graphics
             float lowerY = texY1 * batchable.GetLowerCoordinates().Y;
             float upperY = texY2 * batchable.GetUpperCoordinates().Y;
 
-            PushVertex(x, y + h, lowerX, lowerY, RgbaFloat.White);
-            PushVertex(x + w, y + h, upperX, lowerY, RgbaFloat.White);
-            PushVertex(x, y, lowerX, upperY, RgbaFloat.White);
-            PushVertex(x + w, y, upperX, upperY, RgbaFloat.White);
+            PushVertex(x, y + h, lowerX, lowerY, color);
+            PushVertex(x + w, y + h, upperX, lowerY, color);
+            PushVertex(x, y, lowerX, upperY, color);
+            PushVertex(x + w, y, upperX, upperY, color);
             index++;
         }
 
-        public void Draw(IBatchable batchable, float x, float y, float width, float height, float originX, float originY, float rotation, float texX1, float texY1, float texX2, float texY2)
+        public void Draw(IBatchable batchable, RgbaFloat color, float x, float y, float width, float height, float originX, float originY, float rotation, float texX1, float texY1, float texX2, float texY2)
         {
             CheckForFlush(batchable.GetTexture());
 
@@ -108,22 +109,27 @@ namespace PlainCore.Graphics
             ru += position;
             rd += position;
 
-            PushVertex(lu, lowerX, lowerY, RgbaFloat.White);
-            PushVertex(rd, upperX, lowerY, RgbaFloat.White);
-            PushVertex(ld, lowerX, upperY, RgbaFloat.White);
-            PushVertex(ru, upperX, upperY, RgbaFloat.White);
+            PushVertex(lu, lowerX, lowerY, color);
+            PushVertex(rd, upperX, lowerY, color);
+            PushVertex(ld, lowerX, upperY, color);
+            PushVertex(ru, upperX, upperY, color);
 
             index++;
         }
 
         public void Draw(IBatchable batchable, float x, float y, float width, float height, float originX, float originY, float rotation)
         {
-            Draw(batchable, x, y, width, height, originX, originY, rotation, 0f, 0f, 1f, 1f);
+            Draw(batchable, RgbaFloat.White, x, y, width, height, originX, originY, rotation, 0f, 0f, 1f, 1f);
         }
 
         public void Draw(Sprite sprite)
         {
-            Draw(sprite.Texture, sprite.Position.X, sprite.Position.Y, sprite.Scale.X, sprite.Scale.Y, sprite.Origin.X, sprite.Origin.Y, sprite.Rotation);
+            Draw(sprite.Texture, sprite.Color, sprite.Position.X, sprite.Position.Y, sprite.Scale.X, sprite.Scale.Y, sprite.Origin.X, sprite.Origin.Y, sprite.Rotation);
+        }
+
+        public void Draw(Texture texture1, float x, float y, float width, float height)
+        {
+            Draw(texture1, RgbaFloat.White, x, y, width, height);
         }
 
         private void PushVertex(float x, float y, float tx, float ty, RgbaFloat color)
@@ -218,10 +224,10 @@ namespace PlainCore.Graphics
 
         private void LoadShaders()
         {
-            var vShader = new PositionTextureVertexShader();
+            var vShader = new PositionColorTextureVertexShader();
             vertexShader = vShader.CreateDeviceShader(device);
 
-            var fShader = new PositionTextureFragmentShader();
+            var fShader = new PositionColorTextureFragmentShader();
             fragmentShader = fShader.CreateDeviceShader(device);
         }
 
