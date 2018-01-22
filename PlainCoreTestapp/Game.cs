@@ -19,22 +19,19 @@ namespace PlainCoreTestapp
             var texture2 = PlainCore.Graphics.Texture.FromFile(window.Device, "Images/Moon.png");
             var batch = new SpriteBatch(window.Device);
 
-            var varray = new VertexArray(window.Device, 4);
-            varray.Add(new VertexPositionColorTexture(new Vector2(-0.5f, -0.5f), RgbaFloat.Orange, new Vector2()));
-            varray.Add(new VertexPositionColorTexture(new Vector2(0.5f, -0.5f), RgbaFloat.Orange, new Vector2()));
-            varray.Add(new VertexPositionColorTexture(new Vector2(-0.5f, 0.5f), RgbaFloat.Orange, new Vector2()));
-            varray.Add(new VertexPositionColorTexture(new Vector2(0.5f, 0.5f), RgbaFloat.Orange, new Vector2()));
-
             var clock = new Clock();
-
-            float rot = 0f;
 
             while(window.IsOpen)
             {
                 window.DispatchEvents();
                 window.Clear(RgbaFloat.CornflowerBlue);
-                rot += (float)clock.Restart().TotalSeconds * 2f;
-                varray.Draw(window, varray.EmptyTexture);
+                window.GetView().Rotation += (float)clock.Restart().TotalSeconds * 0.2f;
+
+                batch.Begin(window);
+                batch.Draw(texture1, 0.1f, 0.1f, 0.5f, 0.5f);
+                batch.Draw(texture2, -0.5f, -0.4f, 0.4f, 0.4f);
+                batch.End();
+
                 window.Display();
             }
 

@@ -17,7 +17,7 @@ namespace PlainCore.Graphics
         {
             this.device = device;
             CreateResources();
-            vertices = new List<VertexPositionTexture>();
+            vertices = new List<VertexPositionColorTexture>();
         }
 
         private DeviceBuffer vertexBuffer;
@@ -38,7 +38,7 @@ namespace PlainCore.Graphics
         private uint index;
         private IRenderTarget target;
 
-        private List<VertexPositionTexture> vertices;
+        private List<VertexPositionColorTexture> vertices;
 
         private ushort[] indices;
 
@@ -76,10 +76,10 @@ namespace PlainCore.Graphics
             float lowerY = texY1 * batchable.GetLowerCoordinates().Y;
             float upperY = texY2 * batchable.GetUpperCoordinates().Y;
 
-            PushVertex(x, y + h, lowerX, lowerY);
-            PushVertex(x + w, y + h, upperX, lowerY);
-            PushVertex(x, y, lowerX, upperY);
-            PushVertex(x + w, y, upperX, upperY);
+            PushVertex(x, y + h, lowerX, lowerY, RgbaFloat.White);
+            PushVertex(x + w, y + h, upperX, lowerY, RgbaFloat.White);
+            PushVertex(x, y, lowerX, upperY, RgbaFloat.White);
+            PushVertex(x + w, y, upperX, upperY, RgbaFloat.White);
             index++;
         }
 
@@ -108,10 +108,10 @@ namespace PlainCore.Graphics
             ru += position;
             rd += position;
 
-            PushVertex(lu, lowerX, lowerY);
-            PushVertex(rd, upperX, lowerY);
-            PushVertex(ld, lowerX, upperY);
-            PushVertex(ru, upperX, upperY);
+            PushVertex(lu, lowerX, lowerY, RgbaFloat.White);
+            PushVertex(rd, upperX, lowerY, RgbaFloat.White);
+            PushVertex(ld, lowerX, upperY, RgbaFloat.White);
+            PushVertex(ru, upperX, upperY, RgbaFloat.White);
 
             index++;
         }
@@ -126,14 +126,14 @@ namespace PlainCore.Graphics
             Draw(sprite.Texture, sprite.Position.X, sprite.Position.Y, sprite.Scale.X, sprite.Scale.Y, sprite.Origin.X, sprite.Origin.Y, sprite.Rotation);
         }
 
-        private void PushVertex(float x, float y, float tx, float ty)
+        private void PushVertex(float x, float y, float tx, float ty, RgbaFloat color)
         {
-            vertices.Add(new VertexPositionTexture(new Vector2(x, y), new Vector2(tx, ty)));
+            vertices.Add(new VertexPositionColorTexture(new Vector2(x, y), color, new Vector2(tx, ty)));
         }
 
-        private void PushVertex(Vector2 pos, float tx, float ty)
+        private void PushVertex(Vector2 pos, float tx, float ty, RgbaFloat color)
         {
-            vertices.Add(new VertexPositionTexture(pos, new Vector2(tx, ty)));
+            vertices.Add(new VertexPositionColorTexture(pos, color, new Vector2(tx, ty)));
         }
 
         protected void Flush()
@@ -184,12 +184,13 @@ namespace PlainCore.Graphics
         {
             ResourceFactory factory = device.ResourceFactory;
 
-            vertexBuffer = factory.CreateBuffer(new BufferDescription(MAX_BATCH * VertexPositionTexture.Size, BufferUsage.VertexBuffer));
+            vertexBuffer = factory.CreateBuffer(new BufferDescription(MAX_BATCH * VertexPositionColorTexture.Size, BufferUsage.VertexBuffer));
             indexBuffer = factory.CreateBuffer(new BufferDescription(MAX_BATCH * sizeof(ushort), BufferUsage.IndexBuffer));
             worldMatrixBuffer = factory.CreateBuffer(new BufferDescription(64, BufferUsage.UniformBuffer));
 
             var vertexLayoutDescription = new VertexLayoutDescription(
                 new VertexElementDescription("Position", VertexElementSemantic.Position, VertexElementFormat.Float2),
+                new VertexElementDescription("Color", VertexElementSemantic.Color, VertexElementFormat.Float4),
                 new VertexElementDescription("TextureCoords", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float2)
                 );
 
