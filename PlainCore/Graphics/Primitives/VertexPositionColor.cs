@@ -6,7 +6,7 @@ using Veldrid;
 
 namespace PlainCore.Graphics.Primitives
 {
-    public class VertexPositionColor
+    public struct VertexPositionColor
     {
         public VertexPositionColor(Vector2 position, RgbaFloat color)
         {
