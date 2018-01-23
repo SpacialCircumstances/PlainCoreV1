@@ -162,7 +162,7 @@ namespace PlainCore.Graphics
                 indices[idx + 5] = (ushort)(inst + 2);
             }
 
-            
+
 
             device.UpdateBuffer(vertexBuffer, 0, vertices.ToArray());
             device.UpdateBuffer(indexBuffer, 0, indices);
@@ -190,15 +190,21 @@ namespace PlainCore.Graphics
         {
             ResourceFactory factory = device.ResourceFactory;
 
-            vertexBuffer = factory.CreateBuffer(new BufferDescription(MAX_BATCH * VertexPositionColorTexture.Size, BufferUsage.VertexBuffer));
+            vertexBuffer = factory.CreateBuffer(new BufferDescription(MAX_BATCH * PrimitivesInfo.GetSize(typeof(VertexPositionColorTexture)), BufferUsage.VertexBuffer));
             indexBuffer = factory.CreateBuffer(new BufferDescription(MAX_BATCH * sizeof(ushort), BufferUsage.IndexBuffer));
             worldMatrixBuffer = factory.CreateBuffer(new BufferDescription(64, BufferUsage.UniformBuffer));
 
-            var vertexLayoutDescription = new VertexLayoutDescription(
-                new VertexElementDescription("Position", VertexElementSemantic.Position, VertexElementFormat.Float2),
-                new VertexElementDescription("Color", VertexElementSemantic.Color, VertexElementFormat.Float4),
-                new VertexElementDescription("TextureCoords", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float2)
-                );
+            var vld = PrimitivesInfo.GetVertexLayoutDescription(typeof(VertexPositionColorTexture));
+            VertexLayoutDescription vertexLayoutDescription;
+            if (vld.HasValue)
+            {
+                vertexLayoutDescription = vld.Value;
+            }
+            else
+            {
+                throw new NotSupportedException("VertexLayout for VertexPositionColor not found");
+            }
+
 
             LoadShaders();
 

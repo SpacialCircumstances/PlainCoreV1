@@ -29,7 +29,7 @@ namespace PlainCore.Graphics.Primitives
             return 0;
         }
 
-        public static VertexLayoutDescription? GetVertexLayoutDescription(Type primitive, GraphicsDevice device)
+        public static VertexLayoutDescription? GetVertexLayoutDescription(Type primitive)
         {
             if (primitive == typeof(VertexPosition))
             {
