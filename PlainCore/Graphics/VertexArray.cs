@@ -8,21 +8,59 @@ using Veldrid;
 
 namespace PlainCore.Graphics
 {
-    public class VertexArray
+    public class VertexArray<T> where T: struct
     {
         public VertexArray(GraphicsDevice device, int capacity, PrimitiveTopology geometryType = PrimitiveTopology.PointList)
         {
+            
             this.device = device;
             factory = device.ResourceFactory;
             this.geometryType = geometryType;
             this.capacity = (uint)capacity;
             EmptyTexture = Texture.FromImage(device, Image.LoadPixelData<Rgba32>(new byte[]{ (byte)255, (byte)255, (byte)255, (byte)255 }, 1, 1));
+
+            var vShader = BuiltinShaderRepository.GetBuiltinShader(typeof(T), ShaderStages.Vertex);
+            var fShader = BuiltinShaderRepository.GetBuiltinShader(typeof(T), ShaderStages.Fragment);
+
+            if(vShader == null || fShader == null)
+            {
+                throw new NotSupportedException("Not a supported vertex type");
+            }
+
             Shaders = new List<Shader>
             {
-                BuiltinShaderRepository.GetBuiltinShader(typeof(VertexPositionColorTexture), ShaderStages.Vertex),
-                BuiltinShaderRepository.GetBuiltinShader(typeof(VertexPositionColorTexture), ShaderStages.Fragment)
+                vShader,
+                fShader
             };
-            CreateResources();
+
+            uint vertexSize = PrimitivesInfo.GetSize(typeof(T));
+
+            if(vertexSize == 0)
+            {
+                throw new NotSupportedException("Not a supported vertex type");
+            }
+
+            var vld = PrimitivesInfo.GetVertexLayoutDescription(typeof(T));
+
+            if (!vld.HasValue)
+            {
+                throw new NotSupportedException("Not a supported vertex type");
+            }
+
+            var resourceLayoutDescription = GetResourceLayoutDescription(typeof(T));
+
+            CreateResources(vertexSize, resourceLayoutDescription, vld.Value);
+        }
+
+        public VertexArray(GraphicsDevice device, int capacity, PrimitiveTopology geometryType, List<Shader> shaders, uint vertexSize, ResourceLayoutDescription resourceLayoutDescription, VertexLayoutDescription vertexLayoutDescription, bool hasTexture)
+        {
+            this.device = device;
+            factory = device.ResourceFactory;
+            this.capacity = (uint)capacity;
+            this.geometryType = geometryType;
+            Shaders = shaders;
+            this.hasTexture = hasTexture;
+            CreateResources(vertexSize, resourceLayoutDescription, vertexLayoutDescription);
         }
 
         private GraphicsDevice device;
@@ -38,25 +76,22 @@ namespace PlainCore.Graphics
 
         private uint capacity;
 
-        private List<VertexPositionColorTexture> vertices = new List<VertexPositionColorTexture>();
+        private List<T> vertices = new List<T>();
         private List<Shader> Shaders;
         private PrimitiveTopology geometryType;
+
+        private bool hasTexture;
 
         #region Public properties
 
         public int Count { get => vertices.Count; }
         public PrimitiveTopology GeometryType {
             get => geometryType;
-            set
-            {
-                geometryType = value;
-                CreateResources();
-            }
         }
 
         public Texture EmptyTexture;
 
-        public VertexPositionColorTexture this[int index]
+        public T this[int index]
         {
             get => vertices[index];
             set => vertices[index] = value;
@@ -66,7 +101,7 @@ namespace PlainCore.Graphics
 
         #region Public methods
 
-        public void Add(VertexPositionColorTexture vertex)
+        public void Add(T vertex)
         {
             vertices.Add(vertex);
         }
@@ -89,46 +124,56 @@ namespace PlainCore.Graphics
             commands.SetPipeline(pipeline);
             commands.SetVertexBuffer(0, vertexBuffer);
             commands.SetGraphicsResourceSet(0, worldResourceSet);
-            commands.SetGraphicsResourceSet(1, factory.CreateResourceSet(new ResourceSetDescription(textureResourceLayout, texture.DeviceTextureView, device.Aniso4xSampler)));
-            commands.Draw((uint)vertices.Count);
+            if (hasTexture)
+            {
+                commands.SetGraphicsResourceSet(1, factory.CreateResourceSet(new ResourceSetDescription(textureResourceLayout, texture.DeviceTextureView, device.Aniso4xSampler)));
+            }
+                commands.Draw((uint)vertices.Count);
             commands.End();
 
             device.SubmitCommands(commands);
         }
 
-        public void SetShaders(List<Shader> shaders)
-        {
-            Shaders = shaders;
-            CreateResources();
-        }
-
         #endregion
 
-        protected void CreateResources()
+        protected void CreateResources(uint vertexSize, ResourceLayoutDescription resourceLayoutDescription, VertexLayoutDescription vertexLayoutDescription)
         {
             uint size = capacity;
-            vertexBuffer = factory.CreateBuffer(new BufferDescription(size * VertexPositionColorTexture.Size, BufferUsage.VertexBuffer));
+            vertexBuffer = factory.CreateBuffer(new BufferDescription(size * vertexSize, BufferUsage.VertexBuffer));
             worldMatrixBuffer = factory.CreateBuffer(new BufferDescription(64, BufferUsage.UniformBuffer));
 
             worldResourceLayout = factory.CreateResourceLayout(new ResourceLayoutDescription(new ResourceLayoutElementDescription("World", ResourceKind.UniformBuffer, ShaderStages.Vertex)));
-            textureResourceLayout = factory.CreateResourceLayout(new ResourceLayoutDescription(new ResourceLayoutElementDescription("SpriteTexture", ResourceKind.TextureReadOnly, ShaderStages.Fragment), new ResourceLayoutElementDescription("SpriteSampler", ResourceKind.Sampler, ShaderStages.Fragment)));
 
-            var vertexLayoutDescription = new VertexLayoutDescription(
-                new VertexElementDescription("Position", VertexElementSemantic.Position, VertexElementFormat.Float2),
-                new VertexElementDescription("Color", VertexElementSemantic.Color, VertexElementFormat.Float4),
-                new VertexElementDescription("TextureCoords", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float2)
-                );
+            GraphicsPipelineDescription description;
 
-            var description = new GraphicsPipelineDescription
+            if (hasTexture)
             {
-                BlendState = BlendStateDescription.SingleOverrideBlend,
-                DepthStencilState = new DepthStencilStateDescription(true, true, ComparisonKind.LessEqual),
-                RasterizerState = new RasterizerStateDescription(FaceCullMode.None, PolygonFillMode.Solid, FrontFace.Clockwise, true, false),
-                PrimitiveTopology = GeometryType,
-                ResourceLayouts = new[] { worldResourceLayout, textureResourceLayout },
-                ShaderSet = new ShaderSetDescription(new VertexLayoutDescription[] { vertexLayoutDescription }, LoadShaders()),
-                Outputs = device.SwapchainFramebuffer.OutputDescription
-            };
+                textureResourceLayout = factory.CreateResourceLayout(resourceLayoutDescription);
+
+                description = new GraphicsPipelineDescription
+                {
+                    BlendState = BlendStateDescription.SingleOverrideBlend,
+                    DepthStencilState = new DepthStencilStateDescription(true, true, ComparisonKind.LessEqual),
+                    RasterizerState = new RasterizerStateDescription(FaceCullMode.None, PolygonFillMode.Solid, FrontFace.Clockwise, true, false),
+                    PrimitiveTopology = GeometryType,
+                    ResourceLayouts = new[] { worldResourceLayout, textureResourceLayout },
+                    ShaderSet = new ShaderSetDescription(new VertexLayoutDescription[] { vertexLayoutDescription }, LoadShaders()),
+                    Outputs = device.SwapchainFramebuffer.OutputDescription
+                };
+            }
+            else
+            {
+                description = new GraphicsPipelineDescription
+                {
+                    BlendState = BlendStateDescription.SingleOverrideBlend,
+                    DepthStencilState = new DepthStencilStateDescription(true, true, ComparisonKind.LessEqual),
+                    RasterizerState = new RasterizerStateDescription(FaceCullMode.None, PolygonFillMode.Solid, FrontFace.Clockwise, true, false),
+                    PrimitiveTopology = GeometryType,
+                    ResourceLayouts = new[] { worldResourceLayout },
+                    ShaderSet = new ShaderSetDescription(new VertexLayoutDescription[] { vertexLayoutDescription }, LoadShaders()),
+                    Outputs = device.SwapchainFramebuffer.OutputDescription
+                };
+            }
 
             pipeline = factory.CreateGraphicsPipeline(description);
 
@@ -145,6 +190,18 @@ namespace PlainCore.Graphics
             }
 
             return shaders;
+        }
+
+        protected ResourceLayoutDescription GetResourceLayoutDescription(Type primitive)
+        {
+            if (primitive == typeof(VertexPositionColorTexture) || primitive == typeof(VertexPositionTexture))
+            {
+                hasTexture = true;
+                return new ResourceLayoutDescription(new ResourceLayoutElementDescription("SpriteTexture", ResourceKind.TextureReadOnly, ShaderStages.Fragment), new ResourceLayoutElementDescription("SpriteSampler", ResourceKind.Sampler, ShaderStages.Fragment));
+            }
+
+            hasTexture = false;
+            return new ResourceLayoutDescription();
         }
     }
 }

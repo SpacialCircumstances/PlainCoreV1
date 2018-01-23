@@ -17,7 +17,10 @@ namespace PlainCoreTestapp
 
             var texture1 = PlainCore.Graphics.Texture.FromFile(window.Device, "Images/Planet.png");
             var texture2 = PlainCore.Graphics.Texture.FromFile(window.Device, "Images/Moon.png");
-            var batch = new SpriteBatch(window.Device);
+            var varray = new VertexArray<VertexPositionColor>(window.Device, 3, PrimitiveTopology.TriangleList);
+            varray.Add(new VertexPositionColor(new Vector2(0.5f, 0.5f), RgbaFloat.Red));
+            varray.Add(new VertexPositionColor(new Vector2(-0.5f, 0.5f), RgbaFloat.Red));
+            varray.Add(new VertexPositionColor(new Vector2(0.5f, -0.5f), RgbaFloat.Red));
 
             var clock = new Clock();
 
@@ -27,10 +30,7 @@ namespace PlainCoreTestapp
                 window.Clear(RgbaFloat.CornflowerBlue);
                 window.GetView().Rotation += (float)clock.Restart().TotalSeconds * 0.2f;
 
-                batch.Begin(window);
-                batch.Draw(texture1, RgbaFloat.Red, 0.1f, 0.1f, 0.5f, 0.5f);
-                batch.Draw(texture2, -0.5f, -0.4f, 0.4f, 0.4f);
-                batch.End();
+                varray.Draw(window, varray.EmptyTexture);
 
                 window.Display();
             }
