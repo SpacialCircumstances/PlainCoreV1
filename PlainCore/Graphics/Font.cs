@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Numerics;
-using SixLabors.Fonts;
+using PlainCore.Graphics.Text;
 
 namespace PlainCore.Graphics
 {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 
-namespace PlainCore.Graphics
+namespace PlainCore.Graphics.Text
 {
     public struct Glyph
     {
