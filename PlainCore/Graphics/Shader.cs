@@ -47,8 +47,10 @@ namespace PlainCore.Graphics
                     return factory.CreateShader(new ShaderDescription(Stage, HlslShader.LoadBytes(), EntryPoint));
                 case GraphicsBackend.Vulkan:
                     return factory.CreateShader(new ShaderDescription(Stage, SpirvShader.LoadBytes(), EntryPoint));
-                default:
+                case GraphicsBackend.Metal:
                     return factory.CreateShader(new ShaderDescription(Stage, MetalShader.LoadBytes(), EntryPoint));
+               default:
+                    return factory.CreateShader(new ShaderDescription(Stage, GlslShader.LoadBytes(), EntryPoint));
             }
         }
     }
