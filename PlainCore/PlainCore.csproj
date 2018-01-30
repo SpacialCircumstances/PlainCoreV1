@@ -13,10 +13,4 @@
     <PackageReference Include="Veldrid.StartupUtilities" Version="4.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="NOpenType">
-      <HintPath>..\Dependencies\NOpenType.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>
