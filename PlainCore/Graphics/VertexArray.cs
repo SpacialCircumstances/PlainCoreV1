@@ -17,7 +17,6 @@ namespace PlainCore.Graphics
             factory = device.ResourceFactory;
             this.geometryType = geometryType;
             this.capacity = (uint)capacity;
-            EmptyTexture = Texture.FromImage(device, Image.LoadPixelData<Rgba32>(new byte[]{ (byte)255, (byte)255, (byte)255, (byte)255 }, 1, 1));
 
             var vShader = BuiltinShaderRepository.GetBuiltinShader(typeof(T), ShaderStages.Vertex);
             var fShader = BuiltinShaderRepository.GetBuiltinShader(typeof(T), ShaderStages.Fragment);
@@ -88,8 +87,6 @@ namespace PlainCore.Graphics
         public PrimitiveTopology GeometryType {
             get => geometryType;
         }
-
-        public Texture EmptyTexture;
 
         public T this[int index]
         {

@@ -33,7 +33,7 @@ namespace PlainCoreTestapp
                 window.Clear(RgbaFloat.CornflowerBlue);
                 window.GetView().Rotation += (float)clock.Restart().TotalSeconds * 0.2f;
 
-                varray.Draw(window, varray.EmptyTexture);
+                varray.Draw(window, null);
 
                 window.Display();
             }
