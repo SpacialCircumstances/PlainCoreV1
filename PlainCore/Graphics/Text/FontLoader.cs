@@ -20,7 +20,9 @@ namespace PlainCore.Graphics.Text
 
         public static Font LoadFromTruetypeFont(GraphicsDevice device, string filename)
         {
-            return null;
+            var gen = new FontGenerator(filename);
+            var (img, glyphs) = gen.Generate();
+            return Create(device, img, glyphs);
         }
 
         public static Font Create(GraphicsDevice device, Image<Rgba32> image, Dictionary<string, GlyphLayout> glyphDefinition)

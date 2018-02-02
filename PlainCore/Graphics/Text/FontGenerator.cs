@@ -50,9 +50,9 @@ namespace PlainCore.Graphics.Text
                     maxY = h;
                 }
 
+                var layout = new GlyphLayout(character, (currentX, currentY), (w, h));
                 currentX += w;
 
-                var layout = new GlyphLayout(character, (currentX, currentY), (w, h));
                 glyphs.Add(character, layout);
             }
 
@@ -79,8 +79,7 @@ namespace PlainCore.Graphics.Text
         protected unsafe Image<Rgba32> RenderGlyph(FontFace face, string character, int size = 40)
         {
             var glyph = face.GetGlyph(character[0], size);
-            var w = glyph.RenderWidth;
-            var h = glyph.RenderHeight;
+            var (w, h) = GetGlyphSize(face, character);
 
             var surface = new Surface
             {
@@ -117,7 +116,7 @@ namespace PlainCore.Graphics.Text
         protected (int, int) GetGlyphSize(FontFace face, string character, int size = 40)
         {
             var glyph = face.GetGlyph(character[0], size);
-            return (glyph.RenderWidth, glyph.RenderHeight);
+            return ((int)(glyph.HorizontalMetrics.LinearAdvance + glyph.HorizontalMetrics.Bearing.X), glyph.RenderHeight);
         }
     }
 }

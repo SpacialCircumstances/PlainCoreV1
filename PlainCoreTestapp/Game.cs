@@ -7,6 +7,7 @@ using System.Text;
 using Veldrid;
 using PlainCore.Graphics.Primitives;
 using PlainCore.Graphics.Resources;
+using PlainCore.Graphics.Text;
 
 namespace PlainCoreTestapp
 {
@@ -23,7 +24,7 @@ namespace PlainCoreTestapp
             varray.Add(new VertexPositionColor(new Vector2(-0.5f, 0.5f), RgbaFloat.Red));
             varray.Add(new VertexPositionColor(new Vector2(0.5f, -0.5f), RgbaFloat.Red));
 
-            
+            FontLoader.LoadFromTruetypeFont(window.Device, "Fonts/OpenSans-Regular.ttf");
 
             var clock = new Clock();
 
