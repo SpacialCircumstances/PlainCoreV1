@@ -11,15 +11,17 @@ namespace PlainCore.Graphics.Text
 {
     public class FontGenerator
     {
-        public FontGenerator(string filename)
+        public FontGenerator(string filename, int fontSize = 40)
         {
             this.filename = filename;
+            this.fontSize = fontSize;
         }
 
         private string filename;
+        private int fontSize;
         private const int MAX_BITMAP_WIDTH = 1024;
 
-        public (Image<Rgba32>, Dictionary<string, GlyphLayout>) Generate()
+        public (Image<Rgba32>, FontDescription) Generate()
         {
             var font = new FontFace(File.OpenRead(filename));
 
@@ -33,7 +35,7 @@ namespace PlainCore.Graphics.Text
             {
                 char c = (char)i;
                 string character = new string(c, 1);
-                var (w, h) = GetGlyphSize(font, character);
+                var (w, h) = GetGlyphSize(font, character, fontSize);
                 
                 //Glyph would be to big
                 if(currentX + w > MAX_BITMAP_WIDTH)
@@ -64,22 +66,20 @@ namespace PlainCore.Graphics.Text
             {
                 foreach (var glyph in glyphs)
                 {
-                    var img = RenderGlyph(font, glyph.Key);
+                    var img = RenderGlyph(font, glyph.Key, fontSize);
                     var size = new Size(glyph.Value.GlyphSize.W, glyph.Value.GlyphSize.H);
                     var pos = new Point(glyph.Value.BitmapPosition.X, glyph.Value.BitmapPosition.Y);
                     ctx.DrawImage(img, 1f, size, pos);
                 }
             });
 
-            bitmap.Save("font.png");
-
-            return (bitmap, glyphs);
+            return (bitmap, new FontDescription(glyphs, 40));
         }
 
-        protected unsafe Image<Rgba32> RenderGlyph(FontFace face, string character, int size = 40)
+        protected unsafe Image<Rgba32> RenderGlyph(FontFace face, string character, int size)
         {
             var glyph = face.GetGlyph(character[0], size);
-            var (w, h) = GetGlyphSize(face, character);
+            var (w, h) = GetGlyphSize(face, character, size);
 
             var surface = new Surface
             {
@@ -113,10 +113,10 @@ namespace PlainCore.Graphics.Text
             return Image.LoadPixelData<Rgba32>(pixelData, w, h);
         }
 
-        protected (int, int) GetGlyphSize(FontFace face, string character, int size = 40)
+        protected (int, int) GetGlyphSize(FontFace face, string character, int size)
         {
             var glyph = face.GetGlyph(character[0], size);
-            return ((int)(glyph.HorizontalMetrics.LinearAdvance + glyph.HorizontalMetrics.Bearing.X), glyph.RenderHeight);
+            return (glyph.RenderWidth, glyph.RenderHeight);
         }
     }
 }

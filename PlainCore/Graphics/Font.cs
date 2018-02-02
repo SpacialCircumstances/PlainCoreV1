@@ -8,14 +8,14 @@ namespace PlainCore.Graphics
 {
     public class Font
     {
-        protected internal Font(Texture fontTexture, Dictionary<string, GlyphLayout> glyphs)
+        protected internal Font(Texture fontTexture, FontDescription description)
         {
             this.fontTexture = fontTexture;
-            this.glyphs = glyphs;
+            this.FontDescription = description;
         }
 
         protected internal Texture fontTexture;
-        protected internal Dictionary<string, GlyphLayout> glyphs;
+        public FontDescription FontDescription;
 
         #region Public methods
 

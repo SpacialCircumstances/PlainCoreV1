@@ -24,7 +24,7 @@ namespace PlainCoreTestapp
             varray.Add(new VertexPositionColor(new Vector2(-0.5f, 0.5f), RgbaFloat.Red));
             varray.Add(new VertexPositionColor(new Vector2(0.5f, -0.5f), RgbaFloat.Red));
 
-            FontLoader.LoadFromTruetypeFont(window.Device, "Fonts/OpenSans-Regular.ttf");
+            FontLoader.LoadFromTruetypeFont(window.Device, "Fonts/OpenSans-Regular.ttf", 40);
 
             var clock = new Clock();
 

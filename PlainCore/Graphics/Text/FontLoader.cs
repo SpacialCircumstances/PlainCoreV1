@@ -18,32 +18,32 @@ namespace PlainCore.Graphics.Text
             return Create(device, image, glyphs);
         }
 
-        public static Font LoadFromTruetypeFont(GraphicsDevice device, string filename)
+        public static Font LoadFromTruetypeFont(GraphicsDevice device, string filename, int fontSize)
         {
-            var gen = new FontGenerator(filename);
+            var gen = new FontGenerator(filename, fontSize);
             var (img, glyphs) = gen.Generate();
             return Create(device, img, glyphs);
         }
 
-        public static Font Create(GraphicsDevice device, Image<Rgba32> image, Dictionary<string, GlyphLayout> glyphDefinition)
+        public static Font Create(GraphicsDevice device, Image<Rgba32> image, FontDescription description)
         {
             var texture = Texture.FromImage(device, image);
-            return CreateFromTexture(texture, glyphDefinition);
+            return CreateFromTexture(texture, description);
         }
 
-        public static Font CreateFromTexture(Texture texture, Dictionary<string, GlyphLayout> glyphDefinition)
+        public static Font CreateFromTexture(Texture texture, FontDescription description)
         {
-            return new Font(texture, glyphDefinition);
+            return new Font(texture, description);
         }
 
         public static void SaveFont(Font font, string imageFile, string glyphFile)
         {
-            string json = JsonConvert.SerializeObject(font.glyphs);
+            string json = JsonConvert.SerializeObject(font.FontDescription);
         }
 
-        public static Dictionary<string, GlyphLayout> LoadGlyphs(string glyphDefinition)
+        public static FontDescription LoadGlyphs(string glyphDefinition)
         {
-            return JsonConvert.DeserializeObject<Dictionary<string, GlyphLayout>>(glyphDefinition);
+            return JsonConvert.DeserializeObject<FontDescription>(glyphDefinition);
         }
     }
 }
