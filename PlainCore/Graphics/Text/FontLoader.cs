@@ -1,6 +1,8 @@
-﻿using SixLabors.ImageSharp;
+﻿using Newtonsoft.Json;
+using SixLabors.ImageSharp;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using Veldrid;
 
@@ -8,35 +10,38 @@ namespace PlainCore.Graphics.Text
 {
     public static class FontLoader
     {
-        public static Font LoadFromDefinition(string bitmapFile, string glyphFile)
+        public static Font LoadFromDefinition(GraphicsDevice device, string bitmapFile, string glyphFile)
+        {
+            var image = Image.Load(bitmapFile);
+            var glyphFileContent = File.ReadAllText(glyphFile);
+            var glyphs = LoadGlyphs(glyphFileContent);
+            return Create(device, image, glyphs);
+        }
+
+        public static Font LoadFromTruetypeFont(GraphicsDevice device, string filename)
         {
             return null;
         }
 
-        public static Font LoadFromTruetypeFont(string filename)
-        {
-            return null;
-        }
-
-        public static Font Create(GraphicsDevice device, Image<Rgba32> image, string glyphDefinition)
+        public static Font Create(GraphicsDevice device, Image<Rgba32> image, Dictionary<string, GlyphLayout> glyphDefinition)
         {
             var texture = Texture.FromImage(device, image);
             return CreateFromTexture(texture, glyphDefinition);
         }
 
-        public static Font CreateFromTexture(Texture texture, string glyphDefinition)
+        public static Font CreateFromTexture(Texture texture, Dictionary<string, GlyphLayout> glyphDefinition)
         {
-            return null;
+            return new Font(texture, glyphDefinition);
         }
 
         public static void SaveFont(Font font, string imageFile, string glyphFile)
         {
-
+            string json = JsonConvert.SerializeObject(font.glyphs);
         }
 
-        public static List<GlyphLayout> LoadGlyphs(string glyphDefinition)
+        public static Dictionary<string, GlyphLayout> LoadGlyphs(string glyphDefinition)
         {
-            return new List<GlyphLayout>();
+            return JsonConvert.DeserializeObject<Dictionary<string, GlyphLayout>>(glyphDefinition);
         }
     }
 }

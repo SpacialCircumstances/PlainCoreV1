@@ -1,18 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Numerics;
-using System.Text;
 
 namespace PlainCore.Graphics.Text
 {
-    public class GlyphLayout
+    public struct GlyphLayout
     {
-        public GlyphLayout()
+        public GlyphLayout(string character, (int x, int y) bitmapPosition, (int w, int h) size)
         {
-
+            Character = character;
+            BitmapPosition = bitmapPosition;
+            GlyphSize = size;
         }
 
-        public Glyph Glyph;
-        public Vector2 BitmapPosition;
+        public string Character;
+        public (int X, int Y) BitmapPosition;
+        public (int W, int H) GlyphSize;
     }
 }
