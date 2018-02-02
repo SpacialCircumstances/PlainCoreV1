@@ -107,7 +107,7 @@ namespace PlainCore.Graphics.Text
                 pixelData[index++] = c;
                 pixelData[index++] = c;
                 pixelData[index++] = c;
-                pixelData[index++] = 255;
+                pixelData[index++] = c;
             }
 
             return Image.LoadPixelData<Rgba32>(pixelData, w, h);
