@@ -16,15 +16,15 @@ namespace PlainCoreTestapp
         public void Run()
         {
             var window = new RenderWindow();
+            window.GetView().Position = new Vector2(-1, -1);
+            window.GetView().Scale = new Vector2(400, 300);
 
             var texture1 = PlainCore.Graphics.Texture.FromFile(window.Device, "Images/Planet.png");
             var texture2 = PlainCore.Graphics.Texture.FromFile(window.Device, "Images/Moon.png");
-            var varray = new VertexArray<VertexPositionColor>(window.Device, 3, PrimitiveTopology.TriangleList);
-            varray.Add(new VertexPositionColor(new Vector2(0.5f, 0.5f), RgbaFloat.Red));
-            varray.Add(new VertexPositionColor(new Vector2(-0.5f, 0.5f), RgbaFloat.Red));
-            varray.Add(new VertexPositionColor(new Vector2(0.5f, -0.5f), RgbaFloat.Red));
 
-            FontLoader.LoadFromTruetypeFont(window.Device, "Fonts/OpenSans-Regular.ttf", 40);
+            var batch = new SpriteBatch(window.Device);
+
+            var font = FontLoader.LoadFromTruetypeFont(window.Device, "Fonts/OpenSans-Regular.ttf", 40);
 
             var clock = new Clock();
 
@@ -32,10 +32,11 @@ namespace PlainCoreTestapp
             {
                 window.DispatchEvents();
                 window.Clear(RgbaFloat.CornflowerBlue);
-                window.GetView().Rotation += (float)clock.Restart().TotalSeconds * 0.2f;
 
-                varray.Draw(window, null);
-
+                batch.Begin(window);
+                //batch.Draw(texture1, 0, 0, 800f, 600f);
+                font.Draw(batch, "TEST", 0, 0);
+                batch.End();
                 window.Display();
             }
 
