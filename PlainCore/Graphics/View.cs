@@ -32,7 +32,7 @@ namespace PlainCore.Graphics
         public Matrix4x4 GetTransformationMatrix()
         {
             var rotationMatrix = Matrix4x4.CreateRotationZ(rotation);
-            var scaleMatrix = Matrix4x4.CreateScale(scale.X, scale.Y, 0f);
+            var scaleMatrix = Matrix4x4.CreateScale(1f / scale.X, 1f / scale.Y, 0f);
             var translationMatrix = Matrix4x4.CreateTranslation(position.X, position.Y, 0f);
             return scaleMatrix * rotationMatrix * translationMatrix;
         }
