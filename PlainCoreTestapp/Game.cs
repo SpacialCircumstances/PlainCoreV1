@@ -16,8 +16,6 @@ namespace PlainCoreTestapp
         public void Run()
         {
             var window = new RenderWindow();
-            window.GetView().Position = new Vector2(-1, -1);
-            window.GetView().Scale = new Vector2(400, 300);
 
             var texture1 = PlainCore.Graphics.Texture.FromFile(window.Device, "Images/Planet.png");
             var texture2 = PlainCore.Graphics.Texture.FromFile(window.Device, "Images/Moon.png");
