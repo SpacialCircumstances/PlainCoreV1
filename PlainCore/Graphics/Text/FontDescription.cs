@@ -12,7 +12,7 @@ namespace PlainCore.Graphics.Text
             FontSize = fontSize;
         }
 
-        protected Dictionary<string, GlyphLayout> GlyphDefinition;
+        public IReadOnlyDictionary<string, GlyphLayout> GlyphDefinition;
         public int FontSize;
 
         public GlyphLayout GetGlyph(string character)
