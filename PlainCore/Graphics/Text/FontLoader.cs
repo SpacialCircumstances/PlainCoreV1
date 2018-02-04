@@ -18,9 +18,9 @@ namespace PlainCore.Graphics.Text
             return Create(device, image, glyphs);
         }
 
-        public static Font LoadFromTruetypeFont(GraphicsDevice device, string filename, int fontSize)
+        public static Font LoadFromTruetypeFont(GraphicsDevice device, string filename, int fontSize, Antialiasing aa = Antialiasing.MonocolorAlpha)
         {
-            var gen = new FontGenerator(filename, fontSize);
+            var gen = new FontGenerator(filename, fontSize, aa);
             var (img, glyphs) = gen.Generate();
             return Create(device, img, glyphs);
         }
