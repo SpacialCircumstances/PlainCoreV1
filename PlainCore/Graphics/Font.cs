@@ -20,7 +20,7 @@ namespace PlainCore.Graphics
 
         #region Public methods
 
-        public void Draw(SpriteBatch batch, string text, float x, float y)
+        public void Draw(SpriteBatch batch, string text, float x, float y, RgbaFloat color)
         {
             float currentX = x;
             for (int i = 0; i < text.Length; i++)
@@ -33,10 +33,16 @@ namespace PlainCore.Graphics
                 var y1 = fy * (float)glyph.BitmapPosition.Y;
                 var x2 = x1 + (fx * (float)glyph.GlyphSize.W);
                 var y2 = y1 + (fy * (float)glyph.GlyphSize.H);
-                batch.Draw(fontTexture, RgbaFloat.White, currentX, y, glyph.GlyphSize.W, glyph.GlyphSize.H, x1, y1, x2, y2);
+                batch.Draw(fontTexture, color, currentX, y, glyph.GlyphSize.W, glyph.GlyphSize.H, x1, y1, x2, y2);
                 currentX += glyph.GlyphSize.W;
             }
         }
+
+        public void Draw(SpriteBatch batch, string text, float x, float y)
+        {
+            Draw(batch, text, x, y, RgbaFloat.White);
+        }
+
         #endregion
     }
 }

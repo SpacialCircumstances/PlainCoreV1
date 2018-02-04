@@ -35,7 +35,7 @@ namespace PlainCoreTestapp
 
                 batch.Begin(window);
                 //batch.Draw(texture1, 0, 0, 800f, 600f);
-                font.Draw(batch, "TEST", 0, 0);
+                font.Draw(batch, "Test.", 0, 0, RgbaFloat.Red);
                 batch.End();
                 window.Display();
             }
