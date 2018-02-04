@@ -9,16 +9,25 @@ using SixLabors.Primitives;
 
 namespace PlainCore.Graphics.Text
 {
+    public enum Antialiasing
+    {
+        None,
+        MonocolorAlpha,
+        Clamp
+    }
+
     public class FontGenerator
     {
-        public FontGenerator(string filename, int fontSize = 40)
+        public FontGenerator(string filename, int fontSize = 40, Antialiasing aa = Antialiasing.MonocolorAlpha)
         {
             this.filename = filename;
             this.fontSize = fontSize;
+            this.aa = aa;
         }
 
         private string filename;
         private int fontSize;
+        private Antialiasing aa;
         private const int MAX_BITMAP_WIDTH = 1024;
 
         public (Image<Rgba32>, FontDescription) Generate()
@@ -31,14 +40,14 @@ namespace PlainCore.Graphics.Text
             var currentY = 0;
             var maxY = 0;
 
-            for(int i = 33; i < 127; i++)
+            for (int i = 33; i < 127; i++)
             {
                 char c = (char)i;
                 string character = new string(c, 1);
                 var (w, h) = GetGlyphSize(font, character, fontSize);
-                
+
                 //Glyph would be to big
-                if(currentX + w > MAX_BITMAP_WIDTH)
+                if (currentX + w > MAX_BITMAP_WIDTH)
                 {
                     currentY += maxY;
                     maxY = 0;
@@ -47,7 +56,7 @@ namespace PlainCore.Graphics.Text
 
 
                 //Glyph is biggest in its line
-                if(h > maxY)
+                if (h > maxY)
                 {
                     maxY = h;
                 }
@@ -99,6 +108,37 @@ namespace PlainCore.Graphics.Text
             int len = w * h;
             var rawData = new byte[len];
             Marshal.Copy(surface.Bits, rawData, 0, len);
+            var pixelData = ConvertToPixels(rawData);
+
+
+            return Image.LoadPixelData<Rgba32>(pixelData, w, h);
+        }
+
+        protected (int, int) GetGlyphSize(FontFace face, string character, int size)
+        {
+            var glyph = face.GetGlyph(character[0], size);
+            return (glyph.RenderWidth, glyph.RenderHeight);
+        }
+
+        protected byte[] ConvertToPixels(byte[] rawData)
+        {
+            if(aa == Antialiasing.MonocolorAlpha)
+            {
+                return ConvertAAMonocolorAlpha(rawData);
+            }
+            else if(aa == Antialiasing.Clamp)
+            {
+                return ConvertAAClamp(rawData);
+            }
+            else
+            {
+                return ConvertAANone(rawData);
+            }
+        }
+
+        private byte[] ConvertAANone(byte[] rawData)
+        {
+            var len = rawData.Length;
             var pixelData = new byte[len * 4];
             int index = 0;
             for (int i = 0; i < len; i++)
@@ -110,13 +150,48 @@ namespace PlainCore.Graphics.Text
                 pixelData[index++] = c;
             }
 
-            return Image.LoadPixelData<Rgba32>(pixelData, w, h);
+            return pixelData;
         }
 
-        protected (int, int) GetGlyphSize(FontFace face, string character, int size)
+        private byte[] ConvertAAMonocolorAlpha(byte[] rawData)
         {
-            var glyph = face.GetGlyph(character[0], size);
-            return (glyph.RenderWidth, glyph.RenderHeight);
+            var len = rawData.Length;
+            var pixelData = new byte[len * 4];
+            int index = 0;
+            for (int i = 0; i < len; i++)
+            {
+                byte c = rawData[i];
+                pixelData[index++] = 255;
+                pixelData[index++] = 255;
+                pixelData[index++] = 255;
+                pixelData[index++] = c;
+            }
+
+            return pixelData;
+        }
+
+        private byte[] ConvertAAClamp(byte[] rawData)
+        {
+            var len = rawData.Length;
+            var pixelData = new byte[len * 4];
+            int index = 0;
+            for (int i = 0; i < len; i++)
+            {
+                byte c = rawData[i];
+                pixelData[index++] = c;
+                pixelData[index++] = c;
+                pixelData[index++] = c;
+                if(c < 128)
+                {
+                    pixelData[index++] = 0;
+                }
+                else
+                {
+                    pixelData[index++] = c;
+                }
+            }
+
+            return pixelData;
         }
     }
 }
