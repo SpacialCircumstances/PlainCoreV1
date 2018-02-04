@@ -215,7 +215,7 @@ namespace PlainCore.Graphics
             worldResourceSet = device.ResourceFactory.CreateResourceSet(new ResourceSetDescription(worldResourceLayout, worldMatrixBuffer));
 
             var description = new GraphicsPipelineDescription();
-            description.BlendState = BlendStateDescription.SingleOverrideBlend;
+            description.BlendState = BlendStateDescription.SingleAlphaBlend;
             description.DepthStencilState = new DepthStencilStateDescription(true, true, ComparisonKind.LessEqual);
             description.RasterizerState = new RasterizerStateDescription(FaceCullMode.None, PolygonFillMode.Solid, FrontFace.Clockwise, true, false);
             description.PrimitiveTopology = PrimitiveTopology.TriangleList;
