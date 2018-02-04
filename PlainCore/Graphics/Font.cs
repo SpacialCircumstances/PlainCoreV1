@@ -43,6 +43,26 @@ namespace PlainCore.Graphics
             Draw(batch, text, x, y, RgbaFloat.White, scale);
         }
 
+        public (float, float) MeasureText(string text, float scale = 1f)
+        {
+            float currentX = 0f;
+            float currentY = 0f;
+
+            for(int i = 0; i < text.Length; i++)
+            {
+                string character = text.Substring(0, 1);
+                var glyph = FontDescription.GetGlyph(character);
+                currentX += glyph.GlyphSize.W;
+
+                if(currentY < glyph.GlyphSize.H)
+                {
+                    currentY = glyph.GlyphSize.H;
+                }
+            }
+
+            return (currentX * scale, currentY * scale);
+        }
+
         #endregion
     }
 }
