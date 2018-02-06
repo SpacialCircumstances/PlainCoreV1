@@ -1,7 +1,9 @@
-﻿using System;
+﻿using PlainCore.System;
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
+using Veldrid;
 
 namespace PlainCore.Graphics
 {
@@ -19,9 +21,11 @@ namespace PlainCore.Graphics
         }
 
         private bool updateNeeded = true;
+        private bool updateViewport = false;
 
         protected Vector2 size = new Vector2(800, 600);
         protected Vector2 center = new Vector2(0, 0);
+        protected FloatRectangle viewportRect = new FloatRectangle();
         protected float rotation = 0f;
 
         public Vector2 Size
@@ -63,16 +67,42 @@ namespace PlainCore.Graphics
             }
         }
 
+        public FloatRectangle Viewport
+        {
+            get
+            {
+                return viewportRect;
+            }
+            set
+            {
+                viewportRect = value;
+                updateViewport = true;
+            }
+        }
+
         protected Matrix4x4 transform = Matrix4x4.Identity;
+        protected Viewport viewport = new Viewport();
 
         public Matrix4x4 GetTransformationMatrix()
         {
             if(updateNeeded)
             {
                 transform = ComputeTransform();
+                updateNeeded = false;
             }
 
             return transform;
+        }
+
+        public Viewport GetViewport()
+        {
+            if(updateViewport)
+            {
+                updateViewport = false;
+                viewport = ComputeViewport();
+            }
+
+            return viewport;
         }
 
         protected Matrix4x4 ComputeTransform()
@@ -83,6 +113,11 @@ namespace PlainCore.Graphics
             var scaleMatrix = Matrix4x4.CreateScale(2 / Size.X, 2 / Size.Y, 0f);
             var translationMatrix = Matrix4x4.CreateTranslation(Center.X - hx, Center.Y - hy, 0f);
             return translationMatrix * scaleMatrix * rotationMatrix;
+        }
+
+        protected Viewport ComputeViewport()
+        {
+            return new Viewport(viewportRect.Position.X, viewportRect.Position.Y, viewportRect.Size.X, viewportRect.Size.Y, 1f, -1f);
         }
     }
 }
