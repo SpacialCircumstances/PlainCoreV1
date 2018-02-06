@@ -10,7 +10,6 @@ namespace PlainCore.Graphics
 {
     public class SpriteBatch : IBatch
     {
-
         private const int MAX_BATCH = 1024;
 
         public SpriteBatch(GraphicsDevice device)
@@ -42,8 +41,6 @@ namespace PlainCore.Graphics
         private List<VertexPositionColorTexture> vertices;
 
         private ushort[] indices;
-
-        private Vector2 nullVector = new Vector2(0, 0);
 
         public void Begin(IRenderTarget target)
         {
@@ -162,8 +159,6 @@ namespace PlainCore.Graphics
                 indices[idx + 5] = (ushort)(inst + 2);
             }
 
-
-
             device.UpdateBuffer(vertexBuffer, 0, vertices.ToArray());
             device.UpdateBuffer(indexBuffer, 0, indices);
 
@@ -205,7 +200,6 @@ namespace PlainCore.Graphics
                 throw new NotSupportedException("VertexLayout for VertexPositionColor not found");
             }
 
-
             LoadShaders();
 
             resourceLayout = factory.CreateResourceLayout(new ResourceLayoutDescription(new ResourceLayoutElementDescription("SpriteTexture", ResourceKind.TextureReadOnly, ShaderStages.Fragment), new ResourceLayoutElementDescription("SpriteSampler", ResourceKind.Sampler, ShaderStages.Fragment)));
@@ -214,14 +208,16 @@ namespace PlainCore.Graphics
 
             worldResourceSet = device.ResourceFactory.CreateResourceSet(new ResourceSetDescription(worldResourceLayout, worldMatrixBuffer));
 
-            var description = new GraphicsPipelineDescription();
-            description.BlendState = BlendStateDescription.SingleAlphaBlend;
-            description.DepthStencilState = new DepthStencilStateDescription(true, true, ComparisonKind.LessEqual);
-            description.RasterizerState = new RasterizerStateDescription(FaceCullMode.None, PolygonFillMode.Solid, FrontFace.Clockwise, true, false);
-            description.PrimitiveTopology = PrimitiveTopology.TriangleList;
-            description.ResourceLayouts = new[] { worldResourceLayout, resourceLayout };
-            description.ShaderSet = new ShaderSetDescription(new VertexLayoutDescription[] { vertexLayoutDescription }, new Veldrid.Shader[] { vertexShader, fragmentShader });
-            description.Outputs = device.SwapchainFramebuffer.OutputDescription;
+            var description = new GraphicsPipelineDescription
+            {
+                BlendState = BlendStateDescription.SingleAlphaBlend,
+                DepthStencilState = new DepthStencilStateDescription(true, true, ComparisonKind.LessEqual),
+                RasterizerState = new RasterizerStateDescription(FaceCullMode.None, PolygonFillMode.Solid, FrontFace.Clockwise, true, false),
+                PrimitiveTopology = PrimitiveTopology.TriangleList,
+                ResourceLayouts = new[] { worldResourceLayout, resourceLayout },
+                ShaderSet = new ShaderSetDescription(new VertexLayoutDescription[] { vertexLayoutDescription }, new Veldrid.Shader[] { vertexShader, fragmentShader }),
+                Outputs = device.SwapchainFramebuffer.OutputDescription
+            };
 
             pipeline = factory.CreateGraphicsPipeline(description);
 
