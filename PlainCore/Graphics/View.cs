@@ -5,36 +5,84 @@ using System.Text;
 
 namespace PlainCore.Graphics
 {
-    public class View : ITransformable
+    public class View
     {
-        public View(Vector2 pos, float rot = 0f)
+        public View(Vector2 size, Vector2 center, float rotation = 0f)
         {
-            position = pos;
-            rotation = rot;
-            scale = new Vector2(1f);
+            this.size = size;
+            this.center = center;
+            this.rotation = rotation;
         }
 
-        public View(Vector2 pos, float rot, Vector2 scal)
+        public View()
         {
-            position = pos;
-            rotation = rot;
-            scale = scal;
         }
 
-        protected Vector2 position;
-        protected float rotation;
-        protected Vector2 scale;
+        private bool updateNeeded = true;
 
-        public Vector2 Position { get => position; set => position = value; }
-        public float Rotation { get => rotation; set => rotation = value; }
-        public Vector2 Scale { get => scale; set => scale = value; }
+        protected Vector2 size = new Vector2(800, 600);
+        protected Vector2 center = new Vector2(0, 0);
+        protected float rotation = 0f;
+
+        public Vector2 Size
+        {
+            get
+            {
+                return size;
+            }
+            set
+            {
+                size = value;
+                updateNeeded = true;
+            }
+        }
+
+        public Vector2 Center
+        {
+            get
+            {
+                return center;
+            }
+            set
+            {
+                center = value;
+                updateNeeded = true;
+            }
+        }
+
+        public float Rotation
+        {
+            get
+            {
+                return rotation;
+            }
+            set
+            {
+                rotation = value;
+                updateNeeded = true;
+            }
+        }
+
+        protected Matrix4x4 transform = Matrix4x4.Identity;
 
         public Matrix4x4 GetTransformationMatrix()
         {
-            var rotationMatrix = Matrix4x4.CreateRotationZ(rotation);
-            var scaleMatrix = Matrix4x4.CreateScale(1f / scale.X, 1f / scale.Y, 0f);
-            var translationMatrix = Matrix4x4.CreateTranslation(position.X, position.Y, 0f);
-            return scaleMatrix * rotationMatrix * translationMatrix;
+            if(updateNeeded)
+            {
+                transform = ComputeTransform();
+            }
+
+            return transform;
+        }
+
+        protected Matrix4x4 ComputeTransform()
+        {
+            var hx = Size.X / 2;
+            var hy = Size.Y / 2;
+            var rotationMatrix = Matrix4x4.CreateRotationZ(Rotation);
+            var scaleMatrix = Matrix4x4.CreateScale(2 / Size.X, 2 / Size.Y, 0f);
+            var translationMatrix = Matrix4x4.CreateTranslation(Center.X - hx, Center.Y - hy, 0f);
+            return translationMatrix * scaleMatrix * rotationMatrix;
         }
     }
 }

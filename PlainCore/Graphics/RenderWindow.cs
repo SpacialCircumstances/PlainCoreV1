@@ -13,7 +13,7 @@ namespace PlainCore.Graphics
         public RenderWindow(int width = 800, int height = 600, string title = "PlainCore", GraphicsDeviceOptions options = new GraphicsDeviceOptions()): base(width, height, title)
         {
             graphicsDeviceOptions = options;
-            view = new View(new Vector2(-1, -1), 0f, new Vector2(width / 2, height / 2));
+            view = new View(new Vector2(width, height), new Vector2(0, 0));
         }
 
         private GraphicsDevice device;
