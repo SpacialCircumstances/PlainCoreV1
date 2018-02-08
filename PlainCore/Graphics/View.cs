@@ -21,11 +21,11 @@ namespace PlainCore.Graphics
         }
 
         private bool updateNeeded = true;
-        private bool updateViewport = false;
+        private bool updateViewport = true;
 
         protected Vector2 size = new Vector2(800, 600);
         protected Vector2 center = new Vector2(0, 0);
-        protected FloatRectangle viewportRect = new FloatRectangle();
+        protected FloatRectangle viewportRect = new FloatRectangle(new Vector2(0, 0), new Vector2(800, 600));
         protected float rotation = 0f;
 
         public Vector2 Size
@@ -117,7 +117,7 @@ namespace PlainCore.Graphics
 
         protected Viewport ComputeViewport()
         {
-            return new Viewport(viewportRect.Position.X, viewportRect.Position.Y, viewportRect.Size.X, viewportRect.Size.Y, 1f, -1f);
+            return new Viewport(viewportRect.Position.X, viewportRect.Position.Y, viewportRect.Size.X, viewportRect.Size.Y, 0f, 10f);
         }
     }
 }
