@@ -117,7 +117,7 @@ namespace PlainCore.Graphics
 
             commands.Begin();
             commands.SetFramebuffer(target.GetFramebuffer());
-            commands.SetFullViewports();
+            commands.SetViewport(0, target.GetView().GetViewport());
             commands.SetPipeline(pipeline);
             commands.SetVertexBuffer(0, vertexBuffer);
             commands.SetGraphicsResourceSet(0, worldResourceSet);

@@ -166,7 +166,7 @@ namespace PlainCore.Graphics
 
             commandList.Begin();
             commandList.SetFramebuffer(target.GetFramebuffer());
-            commandList.SetFullViewports();
+            commandList.SetViewport(0, target.GetView().GetViewport());
             commandList.SetVertexBuffer(0, vertexBuffer);
             commandList.SetIndexBuffer(indexBuffer, IndexFormat.UInt16);
             commandList.SetPipeline(pipeline);

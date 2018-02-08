@@ -14,6 +14,7 @@ namespace PlainCore.Graphics
         {
             graphicsDeviceOptions = options;
             view = new View(new Vector2(width, height), new Vector2(0, 0));
+            view.Viewport = new System.FloatRectangle(new Vector2(0, 0), new Vector2(width, height));
         }
 
         private GraphicsDevice device;
