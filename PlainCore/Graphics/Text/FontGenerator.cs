@@ -29,6 +29,7 @@ namespace PlainCore.Graphics.Text
         private int fontSize;
         private Antialiasing aa;
         private const int MAX_BITMAP_WIDTH = 1024;
+        private const int HORIZONTAL_OFFSET = 2; //Reduces artifacts when scaling up
 
         public (Image<Rgba32>, FontDescription) Generate()
         {
@@ -47,7 +48,7 @@ namespace PlainCore.Graphics.Text
                 var (w, h) = GetGlyphSize(font, character, fontSize);
 
                 //Glyph would be to big
-                if (currentX + w > MAX_BITMAP_WIDTH)
+                if (currentX + w + HORIZONTAL_OFFSET > MAX_BITMAP_WIDTH)
                 {
                     currentY += maxY;
                     maxY = 0;
@@ -62,7 +63,7 @@ namespace PlainCore.Graphics.Text
                 }
 
                 var layout = new GlyphLayout(character, (currentX, currentY), (w, h));
-                currentX += w;
+                currentX += w + HORIZONTAL_OFFSET;
 
                 glyphs.Add(character, layout);
             }
