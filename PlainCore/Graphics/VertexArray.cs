@@ -110,13 +110,13 @@ namespace PlainCore.Graphics
         public void Draw(IRenderTarget target, Texture texture)
         {
             device.UpdateBuffer(vertexBuffer, 0, vertices.ToArray());
-            device.UpdateBuffer(worldMatrixBuffer, 0, target.GetView().GetTransformationMatrix());
+            device.UpdateBuffer(worldMatrixBuffer, 0, target.View.GetTransformationMatrix());
 
             worldResourceSet = factory.CreateResourceSet(new ResourceSetDescription(worldResourceLayout, worldMatrixBuffer));
 
             commands.Begin();
-            commands.SetFramebuffer(target.GetFramebuffer());
-            commands.SetViewport(0, target.GetView().GetViewport());
+            commands.SetFramebuffer(target.Framebuffer);
+            commands.SetViewport(0, target.View.GetViewport());
             commands.SetPipeline(pipeline);
             commands.SetVertexBuffer(0, vertexBuffer);
             commands.SetGraphicsResourceSet(0, worldResourceSet);

@@ -52,6 +52,10 @@ namespace PlainCore.Window
             get => window.Exists;
         }
 
+        public Framebuffer Framebuffer => device.SwapchainFramebuffer;
+
+        public View View => view;
+
         #endregion
 
         protected void CreateWindow()
@@ -99,16 +103,6 @@ namespace PlainCore.Window
             clearCommandList.End();
 
             device.SubmitCommands(clearCommandList);
-        }
-
-        public Framebuffer GetFramebuffer()
-        {
-            return device.SwapchainFramebuffer;
-        }
-
-        public View GetView()
-        {
-            return view;
         }
 
         public InputSnapshot DispatchEvents()

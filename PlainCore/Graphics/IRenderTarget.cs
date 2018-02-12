@@ -10,7 +10,7 @@ namespace PlainCore.Graphics
         int Height { get; }
         int Width { get; }
 
-        Framebuffer GetFramebuffer();
-        View GetView();
+        Framebuffer Framebuffer { get; }
+        View View { get; }
     }
 }

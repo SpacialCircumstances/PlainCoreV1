@@ -53,7 +53,7 @@ namespace PlainCore.Graphics
 
             drawing = true;
             index = 0;
-            device.UpdateBuffer(worldMatrixBuffer, 0, target.GetView().GetTransformationMatrix());
+            device.UpdateBuffer(worldMatrixBuffer, 0, target.View.GetTransformationMatrix());
         }
 
         public void End()
@@ -165,8 +165,8 @@ namespace PlainCore.Graphics
             resourceSet = device.ResourceFactory.CreateResourceSet(new ResourceSetDescription(resourceLayout, texture.DeviceTextureView, device.Aniso4xSampler));
 
             commandList.Begin();
-            commandList.SetFramebuffer(target.GetFramebuffer());
-            commandList.SetViewport(0, target.GetView().GetViewport());
+            commandList.SetFramebuffer(target.Framebuffer);
+            commandList.SetViewport(0, target.View.GetViewport());
             commandList.SetVertexBuffer(0, vertexBuffer);
             commandList.SetIndexBuffer(indexBuffer, IndexFormat.UInt16);
             commandList.SetPipeline(pipeline);
