@@ -7,8 +7,8 @@ namespace PlainCore.Graphics
 {
     public interface IBatchable
     {
-        Texture GetTexture();
-        Vector2 GetLowerCoordinates();
-        Vector2 GetUpperCoordinates();
+        Texture Texture { get; }
+        Vector2 LowerCoordinates { get; }
+        Vector2 UpperCoordinates { get; }
     }
 }

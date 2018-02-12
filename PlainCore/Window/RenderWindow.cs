@@ -14,18 +14,15 @@ namespace PlainCore.Window
     {
         public RenderWindow(int width = 800, int height = 600, string title = "PlainCore", GraphicsDeviceOptions options = new GraphicsDeviceOptions())
         {
-            this.width = width;
-            this.height = height;
-            this.title = title;
+            this.Width = width;
+            this.Height = height;
+            this.Title = title;
             graphicsDeviceOptions = options;
             view = new View(new Vector2(width, height), new Vector2(0, 0));
             view.Viewport = new System.FloatRectangle(new Vector2(0, 0), new Vector2(width, height));
             CreateWindow();
         }
 
-        private int width;
-        private int height;
-        private string title;
         protected internal Sdl2Window window;
         private GraphicsDevice device;
         private GraphicsDeviceOptions graphicsDeviceOptions;
@@ -44,23 +41,11 @@ namespace PlainCore.Window
             get => device.ResourceFactory;
         }
 
-        public int Width
-        {
-            set => width = value;
-            get => width;
-        }
+        public int Width { set; get; }
 
-        public int Height
-        {
-            set => height = value;
-            get => height;
-        }
+        public int Height { set; get; }
 
-        public string Title
-        {
-            set => title = value;
-            get => title;
-        }
+        public string Title { set; get; }
 
         public bool IsOpen
         {

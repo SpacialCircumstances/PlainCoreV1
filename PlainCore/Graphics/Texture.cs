@@ -42,21 +42,6 @@ namespace PlainCore.Graphics
             return tex;
         }
 
-        public Texture GetTexture()
-        {
-            return this;
-        }
-
-        public Vector2 GetLowerCoordinates()
-        {
-            return lowerCoords;
-        }
-
-        public Vector2 GetUpperCoordinates()
-        {
-            return upperCoords;
-        }
-
         #endregion
 
         #region Properties
@@ -70,6 +55,12 @@ namespace PlainCore.Graphics
         {
             get => (int)DeviceTexture.Height;
         }
+
+        Texture IBatchable.Texture => this;
+
+        public Vector2 LowerCoordinates => lowerCoords;
+
+        public Vector2 UpperCoordinates => upperCoords;
 
         public Veldrid.Texture DeviceTexture;
         public TextureView DeviceTextureView;

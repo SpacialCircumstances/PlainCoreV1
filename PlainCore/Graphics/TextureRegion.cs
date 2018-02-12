@@ -18,19 +18,10 @@ namespace PlainCore.Graphics
         protected Vector2 lowerCoords;
         protected Vector2 upperCoords;
 
-        public Vector2 GetLowerCoordinates()
-        {
-            return lowerCoords;
-        }
+        public Texture Texture => texture;
 
-        public Texture GetTexture()
-        {
-            return texture;
-        }
+        public Vector2 LowerCoordinates => lowerCoords;
 
-        public Vector2 GetUpperCoordinates()
-        {
-            return upperCoords;
-        }
+        public Vector2 UpperCoordinates => upperCoords;
     }
 }

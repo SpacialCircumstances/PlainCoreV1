@@ -65,14 +65,14 @@ namespace PlainCore.Graphics
 
         public void Draw(IBatchable batchable, RgbaFloat color, float x, float y, float width, float height, float texX1 = 0f, float texY1 = 0f, float texX2 = 1f, float texY2 = 1f)
         {
-            CheckForFlush(batchable.GetTexture());
+            CheckForFlush(batchable.Texture);
             float w = width;
             float h = height;
 
-            float lowerX = batchable.GetLowerCoordinates().X + (texX1 * batchable.GetUpperCoordinates().X);
-            float upperX = texX2 * batchable.GetUpperCoordinates().X;
-            float lowerY = batchable.GetLowerCoordinates().Y + (texY1 * batchable.GetUpperCoordinates().Y);
-            float upperY = texY2 * batchable.GetUpperCoordinates().Y;
+            float lowerX = batchable.LowerCoordinates.X + (texX1 * batchable.UpperCoordinates.X);
+            float upperX = texX2 * batchable.UpperCoordinates.X;
+            float lowerY = batchable.LowerCoordinates.Y + (texY1 * batchable.UpperCoordinates.Y);
+            float upperY = texY2 * batchable.UpperCoordinates.Y;
 
             PushVertex(x, y + h, lowerX, lowerY, color);
             PushVertex(x + w, y + h, upperX, lowerY, color);
@@ -83,12 +83,12 @@ namespace PlainCore.Graphics
 
         public void Draw(IBatchable batchable, RgbaFloat color, float x, float y, float width, float height, float originX, float originY, float rotation, float texX1, float texY1, float texX2, float texY2)
         {
-            CheckForFlush(batchable.GetTexture());
+            CheckForFlush(batchable.Texture);
 
-            float lowerX = batchable.GetLowerCoordinates().X + (texX1 * batchable.GetUpperCoordinates().X);
-            float upperX = texX2 * batchable.GetUpperCoordinates().X;
-            float lowerY = batchable.GetLowerCoordinates().Y + (texY1 * batchable.GetUpperCoordinates().Y);
-            float upperY = texY2 * batchable.GetUpperCoordinates().Y;
+            float lowerX = batchable.LowerCoordinates.X + (texX1 * batchable.UpperCoordinates.X);
+            float upperX = texX2 * batchable.UpperCoordinates.X;
+            float lowerY = batchable.LowerCoordinates.Y + (texY1 * batchable.UpperCoordinates.Y);
+            float upperY = texY2 * batchable.UpperCoordinates.Y;
 
             float ox = originX * width;
             float oy = originY * height;

@@ -12,7 +12,7 @@ using PlainCore.Window;
 
 namespace PlainCoreTestapp
 {
-    class Game
+    public class Game
     {
         public void Run()
         {
