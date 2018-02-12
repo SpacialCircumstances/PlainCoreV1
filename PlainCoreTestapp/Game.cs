@@ -8,6 +8,7 @@ using Veldrid;
 using PlainCore.Graphics.Primitives;
 using PlainCore.Graphics.Resources;
 using PlainCore.Graphics.Text;
+using PlainCore.Window;
 
 namespace PlainCoreTestapp
 {

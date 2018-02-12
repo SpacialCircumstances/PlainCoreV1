@@ -5,18 +5,28 @@ using System.Text;
 using PlainCore.Window;
 using Veldrid;
 using Veldrid.StartupUtilities;
+using PlainCore.Graphics;
+using Veldrid.Sdl2;
 
-namespace PlainCore.Graphics
+namespace PlainCore.Window
 {
-    public class RenderWindow: Window.Window, IRenderTarget
+    public class RenderWindow: IRenderTarget
     {
-        public RenderWindow(int width = 800, int height = 600, string title = "PlainCore", GraphicsDeviceOptions options = new GraphicsDeviceOptions()): base(width, height, title)
+        public RenderWindow(int width = 800, int height = 600, string title = "PlainCore", GraphicsDeviceOptions options = new GraphicsDeviceOptions())
         {
+            this.width = width;
+            this.height = height;
+            this.title = title;
             graphicsDeviceOptions = options;
             view = new View(new Vector2(width, height), new Vector2(0, 0));
             view.Viewport = new System.FloatRectangle(new Vector2(0, 0), new Vector2(width, height));
+            CreateWindow();
         }
 
+        private int width;
+        private int height;
+        private string title;
+        protected internal Sdl2Window window;
         private GraphicsDevice device;
         private GraphicsDeviceOptions graphicsDeviceOptions;
         private CommandList clearCommandList;
@@ -34,11 +44,44 @@ namespace PlainCore.Graphics
             get => device.ResourceFactory;
         }
 
+        public int Width
+        {
+            set => width = value;
+            get => width;
+        }
+
+        public int Height
+        {
+            set => height = value;
+            get => height;
+        }
+
+        public string Title
+        {
+            set => title = value;
+            get => title;
+        }
+
+        public bool IsOpen
+        {
+            get => window.Exists;
+        }
+
         #endregion
 
-        protected override void CreateWindow()
+        protected void CreateWindow()
         {
-            base.CreateWindow();
+            var wci = new WindowCreateInfo()
+            {
+                WindowHeight = Height,
+                WindowWidth = Width,
+                WindowTitle = Title,
+                X = 100,
+                Y = 100
+            };
+
+            window = VeldridStartup.CreateWindow(ref wci);
+
             device = VeldridStartup.CreateGraphicsDevice(window, graphicsDeviceOptions, GraphicsBackend.OpenGL);
 
             //Only support OpenGL
@@ -81,6 +124,11 @@ namespace PlainCore.Graphics
         public View GetView()
         {
             return view;
+        }
+
+        public InputSnapshot DispatchEvents()
+        {
+            return window.PumpEvents();
         }
 
         #endregion
