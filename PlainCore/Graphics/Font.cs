@@ -16,7 +16,8 @@ namespace PlainCore.Graphics
         }
 
         protected internal Texture fontTexture;
-        public FontDescription FontDescription;
+
+        public FontDescription FontDescription { get; set; }
 
         #region Public methods
 

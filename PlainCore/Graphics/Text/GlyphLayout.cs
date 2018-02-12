@@ -11,8 +11,8 @@ namespace PlainCore.Graphics.Text
             GlyphSize = size;
         }
 
-        public string Character;
-        public (int X, int Y) BitmapPosition;
-        public (int W, int H) GlyphSize;
+        public string Character { get; set; }
+        public (int X, int Y) BitmapPosition { get; set; }
+        public (int W, int H) GlyphSize { get; set; }
     }
 }
