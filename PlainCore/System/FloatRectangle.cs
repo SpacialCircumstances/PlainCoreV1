@@ -9,8 +9,8 @@ namespace PlainCore.System
     {
         public FloatRectangle(Vector2 position, Vector2 size)
         {
-            Position = position;
-            Size = size;
+            this.position = position;
+            this.size = size;
         }
 
         public FloatRectangle()
@@ -23,7 +23,19 @@ namespace PlainCore.System
 
         }
 
-        public Vector2 Position = new Vector2(0, 0);
-        public Vector2 Size = new Vector2(1, 1);
+        protected Vector2 position;
+        protected Vector2 size;
+
+        public Vector2 Position
+        {
+            get => position;
+            set => position = value;
+        }
+
+        public Vector2 Size
+        {
+            get => size;
+            set => size = value;
+        }
     }
 }

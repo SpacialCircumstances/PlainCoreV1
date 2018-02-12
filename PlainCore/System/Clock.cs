@@ -15,9 +15,9 @@ namespace PlainCore.System
 
         protected Stopwatch clock;
 
-        public TimeSpan GetElapsedTime()
+        public TimeSpan ElapsedTime
         {
-            return clock.Elapsed;
+            get => clock.Elapsed;
         }
 
         public TimeSpan Restart()

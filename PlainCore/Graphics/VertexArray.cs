@@ -12,7 +12,6 @@ namespace PlainCore.Graphics
     {
         public VertexArray(GraphicsDevice device, int capacity, PrimitiveTopology geometryType = PrimitiveTopology.PointList)
         {
-            
             this.device = device;
             factory = device.ResourceFactory;
             this.geometryType = geometryType;
@@ -176,7 +175,7 @@ namespace PlainCore.Graphics
 
             commands = factory.CreateCommandList();
         }
-        
+
         protected Veldrid.Shader[] LoadShaders()
         {
             var shaders = new Veldrid.Shader[Shaders.Count];
