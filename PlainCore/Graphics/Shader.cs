@@ -28,12 +28,12 @@ namespace PlainCore.Graphics
             EntryPoint = entryPoint;
         }
 
-        public IShaderResource GlslShader;
-        public IShaderResource MetalShader;
-        public IShaderResource HlslShader;
-        public IShaderResource SpirvShader;
-        public ShaderStages Stage;
-        public string EntryPoint;
+        public IShaderResource HlslShader { get; set; }
+        public IShaderResource SpirvShader { get; set; }
+        public ShaderStages Stage { get; set; }
+        public IShaderResource MetalShader { get; set; }
+        public IShaderResource GlslShader { get; set; }
+        public string EntryPoint { get; set; }
 
         public Veldrid.Shader CreateDeviceShader(GraphicsDevice device)
         {
