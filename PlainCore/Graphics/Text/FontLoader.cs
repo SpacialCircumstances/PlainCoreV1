@@ -36,11 +36,6 @@ namespace PlainCore.Graphics.Text
             return new Font(texture, description);
         }
 
-        public static void SaveFont(Font font, string imageFile, string glyphFile)
-        {
-            string json = JsonConvert.SerializeObject(font.FontDescription);
-        }
-
         public static void SaveFontDefinition(Image<Rgba32> bitmap, FontDescription description, string imageFile, string glyphFile)
         {
             string json = JsonConvert.SerializeObject(description);
