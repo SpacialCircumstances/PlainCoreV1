@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PlainCore.System;
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
@@ -10,18 +11,20 @@ namespace PlainCore.Graphics
         public TextureRegion(Texture texture, Vector2 lower, Vector2 upper)
         {
             this.texture = texture;
-            lowerCoords = lower;
-            upperCoords = upper;
+            rectangle = new FloatRectangle(lower, upper - lower);
+        }
+
+        public TextureRegion(Texture texture, FloatRectangle rect)
+        {
+            this.texture = texture;
+            rectangle = rect;
         }
 
         protected Texture texture;
-        protected Vector2 lowerCoords;
-        protected Vector2 upperCoords;
+        protected FloatRectangle rectangle;
 
         public Texture Texture => texture;
 
-        public Vector2 LowerCoordinates => lowerCoords;
-
-        public Vector2 UpperCoordinates => upperCoords;
+        public FloatRectangle Area => rectangle;
     }
 }

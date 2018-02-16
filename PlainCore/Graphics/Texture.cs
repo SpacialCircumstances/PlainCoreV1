@@ -1,4 +1,5 @@
-﻿using SixLabors.ImageSharp;
+﻿using PlainCore.System;
+using SixLabors.ImageSharp;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -15,8 +16,7 @@ namespace PlainCore.Graphics
 
         }
 
-        private Vector2 lowerCoords = new Vector2(0f);
-        private Vector2 upperCoords = new Vector2(1f);
+        private FloatRectangle rectangle = new FloatRectangle(0, 0, 1, 1);
 
         #region Static factory methods
 
@@ -58,9 +58,7 @@ namespace PlainCore.Graphics
 
         Texture IBatchable.Texture => this;
 
-        public Vector2 LowerCoordinates => lowerCoords;
-
-        public Vector2 UpperCoordinates => upperCoords;
+        public FloatRectangle Area => rectangle;
 
         public Veldrid.Texture DeviceTexture;
         public TextureView DeviceTextureView;

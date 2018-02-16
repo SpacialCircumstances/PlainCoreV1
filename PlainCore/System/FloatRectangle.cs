@@ -37,5 +37,10 @@ namespace PlainCore.System
             get => size;
             set => size = value;
         }
+
+        public Vector2 End
+        {
+            get => Position + Size;
+        }
     }
 }

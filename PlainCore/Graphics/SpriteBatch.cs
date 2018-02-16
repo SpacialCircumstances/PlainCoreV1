@@ -69,10 +69,10 @@ namespace PlainCore.Graphics
             float w = width;
             float h = height;
 
-            float lowerX = batchable.LowerCoordinates.X + (texX1 * batchable.UpperCoordinates.X);
-            float upperX = texX2 * batchable.UpperCoordinates.X;
-            float lowerY = batchable.LowerCoordinates.Y + (texY1 * batchable.UpperCoordinates.Y);
-            float upperY = texY2 * batchable.UpperCoordinates.Y;
+            float lowerX = batchable.Area.Position.X + (texX1 * batchable.Area.End.X);
+            float upperX = texX2 * batchable.Area.End.X;
+            float lowerY = batchable.Area.Position.Y + (texY1 * batchable.Area.End.Y);
+            float upperY = texY2 * batchable.Area.End.Y;
 
             PushVertex(x, y + h, lowerX, lowerY, color);
             PushVertex(x + w, y + h, upperX, lowerY, color);
@@ -85,10 +85,10 @@ namespace PlainCore.Graphics
         {
             CheckForFlush(batchable.Texture);
 
-            float lowerX = batchable.LowerCoordinates.X + (texX1 * batchable.UpperCoordinates.X);
-            float upperX = texX2 * batchable.UpperCoordinates.X;
-            float lowerY = batchable.LowerCoordinates.Y + (texY1 * batchable.UpperCoordinates.Y);
-            float upperY = texY2 * batchable.UpperCoordinates.Y;
+            float lowerX = batchable.Area.Position.X + (texX1 * batchable.Area.End.X);
+            float upperX = texX2 * batchable.Area.End.X;
+            float lowerY = batchable.Area.Position.Y + (texY1 * batchable.Area.End.Y);
+            float upperY = texY2 * batchable.Area.End.Y;
 
             float ox = originX * width;
             float oy = originY * height;
