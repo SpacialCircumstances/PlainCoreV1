@@ -8,6 +8,8 @@ namespace PlainCore.Graphics.BuiltIn
 {
     public static class BuiltinShaderRepository
     {
+        public static string SHADER_REPO = "";
+
         public static Shader GetBuiltinShader(Type vertexType, ShaderStages stage)
         {
             if(vertexType == typeof(VertexPosition))

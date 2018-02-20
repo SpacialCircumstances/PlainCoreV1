@@ -12,11 +12,6 @@ namespace PlainCore.Shaders
     public class PositionColorTexture
     {
         [ResourceSet(0)]
-        public Matrix4x4 Projection;
-        [ResourceSet(0)]
-        public Matrix4x4 View;
-
-        [ResourceSet(1)]
         public Matrix4x4 World;
         [ResourceSet(1)]
         public Texture2DResource SurfaceTexture;
@@ -27,31 +22,30 @@ namespace PlainCore.Shaders
         public FragmentInput VS(VertexInput input)
         {
             FragmentInput output;
-            Vector4 worldPosition = Mul(World, new Vector4(input.Position, 1));
-            Vector4 viewPosition = Mul(View, worldPosition);
-            Vector4 clipPosition = Mul(Projection, viewPosition);
-            output.SystemPosition = clipPosition;
-            output.TexCoords = input.TexCoords;
-
+            output.UV = input.TexCoords;
+            output.frColor = input.Color;
+            output.SystemPosition = Mul(World, new Vector4(input.Position, -1, 1));
             return output;
         }
 
         [FragmentShader]
         public Vector4 FS(FragmentInput input)
         {
-            return Sample(SurfaceTexture, SurfaceSampler, input.TexCoords);
+            return Sample(SurfaceTexture, SurfaceSampler, input.UV) * input.frColor;
         }
 
         public struct VertexInput
         {
-            [PositionSemantic] public Vector3 Position;
+            [PositionSemantic] public Vector2 Position;
             [TextureCoordinateSemantic] public Vector2 TexCoords;
+            [ColorSemantic] public Vector4 Color;
         }
 
         public struct FragmentInput
         {
             [SystemPositionSemantic] public Vector4 SystemPosition;
-            [TextureCoordinateSemantic] public Vector2 TexCoords;
+            [TextureCoordinateSemantic] public Vector2 UV;
+            [ColorSemantic] public Vector4 frColor;
         }
     }
 }

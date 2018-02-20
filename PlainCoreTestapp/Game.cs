@@ -9,6 +9,7 @@ using PlainCore.Graphics.Primitives;
 using PlainCore.Graphics.Resources;
 using PlainCore.Graphics.Text;
 using PlainCore.Window;
+using PlainCore.Graphics.BuiltIn;
 
 namespace PlainCoreTestapp
 {
@@ -16,6 +17,8 @@ namespace PlainCoreTestapp
     {
         public void Run()
         {
+            BuiltinShaderRepository.SHADER_REPO = "../PlainCore.Shaders/Shaders/";
+
             var window = new RenderWindow();
             window.View.Viewport = new FloatRectangle(0, 0, 400, 300);
 
