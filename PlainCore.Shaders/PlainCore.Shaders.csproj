@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ShaderGen.Primitives" Version="1.1.0-gf4889989da" />
+    <PackageReference Include="ShaderGen.Build" Version="1.1.0-gf4889989da" PrivateAssets="All" />
+  </ItemGroup>
+</Project>
