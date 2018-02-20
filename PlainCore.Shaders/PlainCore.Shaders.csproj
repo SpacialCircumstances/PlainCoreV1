@@ -1,11 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <ShaderOutputPath>Shaders</ShaderOutputPath>
+    
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="ShaderGen.Primitives" Version="1.1.0-gf4889989da" />
     <PackageReference Include="ShaderGen.Build" Version="1.1.0-gf4889989da" PrivateAssets="All" />
+    <PackageReference Include="Veldrid" Version="4.0.0" />
   </ItemGroup>
 </Project>
