@@ -3,11 +3,12 @@ using ShaderGen;
 using System.Numerics;
 using static ShaderGen.ShaderBuiltins;
 
-[assembly: ShaderSet("PositionColorTexture", "PlainCore.Shaders.PositionColorTexture.VS", "PlainCore.Shaders.PositionColorTexture.FS")]
+[assembly: ShaderSet("PositionTexture", "PlainCore.Shaders.PositionTexture.VS", "PlainCore.Shaders.PositionTexture.FS")]
+
 
 namespace PlainCore.Shaders
 {
-    public class PositionColorTexture
+    public class PositionTexture
     {
         [ResourceSet(0)]
         public Matrix4x4 World;
@@ -21,7 +22,6 @@ namespace PlainCore.Shaders
         {
             FragmentInput output;
             output.UV = input.TexCoords;
-            output.frColor = input.Color;
             output.SystemPosition = Mul(World, new Vector4(input.Position, -1, 1));
             return output;
         }
@@ -29,21 +29,19 @@ namespace PlainCore.Shaders
         [FragmentShader]
         public Vector4 FS(FragmentInput input)
         {
-            return Sample(SurfaceTexture, SurfaceSampler, input.UV) * input.frColor;
+            return Sample(SurfaceTexture, SurfaceSampler, input.UV);
         }
 
         public struct VertexInput
         {
             [PositionSemantic] public Vector2 Position;
             [TextureCoordinateSemantic] public Vector2 TexCoords;
-            [ColorSemantic] public Vector4 Color;
         }
 
         public struct FragmentInput
         {
             [SystemPositionSemantic] public Vector4 SystemPosition;
             [TextureCoordinateSemantic] public Vector2 UV;
-            [ColorSemantic] public Vector4 frColor;
         }
     }
 }
