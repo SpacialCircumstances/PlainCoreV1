@@ -12,19 +12,7 @@ namespace PlainCore.Graphics.BuiltIn
         {
             Stage = ShaderStages.Fragment;
             EntryPoint = "FS";
-            GlslShader = new ShaderMemoryResource(Encoding.ASCII.GetBytes(glslShader));
+            GlslShader = new ShaderFileResource(BuiltinShaderRepository.SHADER_REPO + "Position-fragment.330.glsl");
         }
-
-        private const string glslShader =
-            @"#version 330 core
-
-out vec4 fsout_Color;
-
-void main()
-{
-    fsout_Color = vec4(1, 1, 1, 1);
-}
-
-";
     }
 }
