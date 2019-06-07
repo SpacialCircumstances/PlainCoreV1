@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Numerics;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.PixelFormats;
 using SharpFont;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -79,7 +81,7 @@ namespace PlainCore.Graphics.Text
                     var img = RenderGlyph(font, glyph.Key, fontSize);
                     var size = new Size(glyph.Value.GlyphSize.W, glyph.Value.GlyphSize.H);
                     var pos = new Point(glyph.Value.BitmapPosition.X, glyph.Value.BitmapPosition.Y);
-                    ctx.DrawImage(img, 1f, size, pos);
+                    ctx.DrawImage(img, pos, 1f);
                 }
             });
 

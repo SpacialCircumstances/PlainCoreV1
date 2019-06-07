@@ -20,7 +20,7 @@ namespace PlainCoreTestapp
             BuiltinShaderRepository.SHADER_REPO = "../PlainCore.Shaders/Shaders/";
 
             var window = new RenderWindow();
-            window.View.Viewport = new FloatRectangle(0, 0, 400, 300);
+            window.View.Viewport = new FloatRectangle(0, 0, 800, 600);
 
             var texture1 = PlainCore.Graphics.Texture.FromFile(window.Device, "Images/Planet.png");
             var texture2 = PlainCore.Graphics.Texture.FromFile(window.Device, "Images/Moon.png");
